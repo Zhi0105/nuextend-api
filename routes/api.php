@@ -1,0 +1,123 @@
+<?php
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventMemberController;
+use App\Http\Controllers\EventStatusController;
+use App\Http\Controllers\EventTypeController;
+use App\Http\Controllers\ModelController;
+use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SkillController;
+use App\Http\Controllers\UnsdgController;
+use App\Http\Controllers\UserController;
+use App\Models\EventMember;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+Route::prefix('v1')->group(function () {
+    Route::get('/', function () {
+        return 'NU Extend API';
+    });
+
+    Route::post('/authenticate', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+
+        // USER START
+            Route::get('/user/all', [AuthController::class, 'index']);
+            Route::get('/user/{id}', [AuthController::class, 'getUser']);
+            Route::post('/user/update/{id}', [AuthController::class, 'update']);
+            Route::post('/user/delete', [AuthController::class, 'delete']);
+            Route::post('/user/organization_assign', [UserController::class, 'organization_assign']);
+
+        // USER END
+
+        // DEPARTMENT START
+            Route::get('/department/all', [DepartmentController::class, 'index']);
+            Route::post('/department/create', [DepartmentController::class, 'create']);
+            Route::post('/department/update', [DepartmentController::class, 'update']);
+            Route::post('/department/delete', [DepartmentController::class, 'delete']);
+
+        // DEPARTMENT END
+
+        // PROGRAM START
+            Route::get('/prpogram/all', [ProgramController::class, 'index']);
+            Route::post('/program/create', [ProgramController::class, 'create']);
+            Route::post('/program/update', [ProgramController::class, 'update']);
+            Route::post('/program/delete', [ProgramController::class, 'delete']);
+        // PROGRAM END
+
+        // ROLE START
+            Route::get('/role/all', [RoleController::class, 'index']);
+        // ROLE END
+
+        // SKILLS START
+            Route::get('/skill/all', [SkillController::class, 'index']);
+            Route::post('/skill/create', [SkillController::class, 'create']);
+            Route::post('/skill/update', [SkillController::class, 'update']);
+            Route::post('/skill/delete', [SkillController::class, 'delete']);
+        // SKILLS END
+
+        // MODEL START
+            Route::get('/model/all', [ModelController::class, 'index']);
+        // MODEL END
+
+        // EVENT TYPES START
+            Route::get('/event_types/all', [EventTypeController::class, 'index']);
+        // EVENT TYPES END
+
+        // EVENT STATUS START
+            Route::get('/event_status/all', [EventStatusController::class, 'index']);
+        // EVENT STATUS END
+
+        // ORGANIZATION START
+            Route::get('/organization/all', [OrganizationController::class, 'index']);
+            Route::post('/organization/create', [OrganizationController::class, 'create']);
+            Route::post('/organization/update', [OrganizationController::class, 'update']);
+            Route::post('/organization/delete', [OrganizationController::class, 'delete']);
+       // ORGANIZATION END
+
+        // EVENT START
+            Route::get('/event/all', [EventController::class, 'index']);
+            Route::post('/event/create', [EventController::class, 'create']);
+            Route::post('/event/update', [EventController::class, 'update']);
+            Route::post('/event/delete', [EventController::class, 'delete']);
+        // EVENT END
+
+        // EVENT MEMBER START
+            Route::get('/event_member/all', [EventMemberController::class, 'index']);
+            Route::post('/event_member/create', [EventMemberController::class, 'create']);
+            Route::post('/event_member/update', [EventMemberController::class, 'update']);
+            Route::post('/event_member/delete', [EventMemberController::class, 'delete']);
+       // EVENT MEMBER END
+
+        // EVENT STATUS START
+            Route::get('/unsdg/all', [UnsdgController::class, 'index']);
+        // EVENT STATUS END
+
+        // PARTICIPANT START
+            Route::get('/participant/all', [ParticipantController::class, 'index']);
+            Route::post('/participant/create', [ParticipantController::class, 'create']);
+            Route::post('/participant/update', [ParticipantController::class, 'update']);
+            Route::post('/participant/delete', [ParticipantController::class, 'delete']);
+        // PARTICIPANT END
+
+    });
+
+});
+
