@@ -32,7 +32,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 404,
                 'message' => 'Invalid email or password'
-            ]);
+            ], 404);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             dd($e->errors()); // or log it
@@ -53,7 +53,7 @@ class AuthController extends Controller
                 "email" => "required",
                 "password" => "required",
                 "contact" => "required",
-                'skills' => 'array',
+                'skills' => 'array|sometimes',
                 'skills.*' => 'integer|exists:skills,id'
             ]);
 

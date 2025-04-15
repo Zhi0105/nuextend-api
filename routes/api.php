@@ -36,8 +36,15 @@ Route::prefix('v1')->group(function () {
     Route::post('/authenticate', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
 
-    Route::middleware('auth:sanctum')->group(function () {
+    // ROLE START
+    Route::get('/role/all', [RoleController::class, 'index']);
+    // ROLE END
 
+    Route::get('/department/all', [DepartmentController::class, 'index']);
+    Route::get('/program/all', [ProgramController::class, 'index']);
+
+
+    Route::middleware('auth:sanctum')->group(function () {
         // USER START
             Route::get('/user/all', [AuthController::class, 'index']);
             Route::get('/user/{id}', [AuthController::class, 'getUser']);
@@ -48,7 +55,6 @@ Route::prefix('v1')->group(function () {
         // USER END
 
         // DEPARTMENT START
-            Route::get('/department/all', [DepartmentController::class, 'index']);
             Route::post('/department/create', [DepartmentController::class, 'create']);
             Route::post('/department/update', [DepartmentController::class, 'update']);
             Route::post('/department/delete', [DepartmentController::class, 'delete']);
@@ -56,15 +62,10 @@ Route::prefix('v1')->group(function () {
         // DEPARTMENT END
 
         // PROGRAM START
-            Route::get('/prpogram/all', [ProgramController::class, 'index']);
             Route::post('/program/create', [ProgramController::class, 'create']);
             Route::post('/program/update', [ProgramController::class, 'update']);
             Route::post('/program/delete', [ProgramController::class, 'delete']);
         // PROGRAM END
-
-        // ROLE START
-            Route::get('/role/all', [RoleController::class, 'index']);
-        // ROLE END
 
         // SKILLS START
             Route::get('/skill/all', [SkillController::class, 'index']);

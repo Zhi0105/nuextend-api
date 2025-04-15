@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('program_id')->nullable();
             $table->unsignedBigInteger('role_id')->nullable();
-            $table->string('school_id');
+            $table->string('school_id')->nullable();
             $table->string('firstname');
             $table->string('middlename');
             $table->string('lastname');
