@@ -18,6 +18,7 @@ class Event extends Model
         'event_type_id',
         'event_status_id',
         'name',
+        'term',
         'address',
         'start_date',
         'end_date',

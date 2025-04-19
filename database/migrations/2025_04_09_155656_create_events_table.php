@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('event_status_id')->nullable();
             $table->string('name');
             $table->string('address');
+            $table->string('term');
             $table->string('start_date');
             $table->string('end_date');
             $table->text('description')->nullable(); // Optional, remove nullable() if required

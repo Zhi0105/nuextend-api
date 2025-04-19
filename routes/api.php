@@ -36,12 +36,16 @@ Route::prefix('v1')->group(function () {
     Route::post('/authenticate', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
 
-    // ROLE START
-    Route::get('/role/all', [RoleController::class, 'index']);
-    // ROLE END
 
+    Route::get('/role/all', [RoleController::class, 'index']);
     Route::get('/department/all', [DepartmentController::class, 'index']);
     Route::get('/program/all', [ProgramController::class, 'index']);
+    Route::get('/model/all', [ModelController::class, 'index']);
+    Route::get('/event_types/all', [EventTypeController::class, 'index']);
+    Route::get('/unsdg/all', [UnsdgController::class, 'index']);
+    Route::get('/event_status/all', [EventStatusController::class, 'index']);
+    Route::get('/organization/all', [OrganizationController::class, 'index']);
+    Route::get('/skill/all', [SkillController::class, 'index']);
 
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -68,26 +72,14 @@ Route::prefix('v1')->group(function () {
         // PROGRAM END
 
         // SKILLS START
-            Route::get('/skill/all', [SkillController::class, 'index']);
             Route::post('/skill/create', [SkillController::class, 'create']);
             Route::post('/skill/update', [SkillController::class, 'update']);
             Route::post('/skill/delete', [SkillController::class, 'delete']);
         // SKILLS END
 
-        // MODEL START
-            Route::get('/model/all', [ModelController::class, 'index']);
-        // MODEL END
 
-        // EVENT TYPES START
-            Route::get('/event_types/all', [EventTypeController::class, 'index']);
-        // EVENT TYPES END
-
-        // EVENT STATUS START
-            Route::get('/event_status/all', [EventStatusController::class, 'index']);
-        // EVENT STATUS END
 
         // ORGANIZATION START
-            Route::get('/organization/all', [OrganizationController::class, 'index']);
             Route::post('/organization/create', [OrganizationController::class, 'create']);
             Route::post('/organization/update', [OrganizationController::class, 'update']);
             Route::post('/organization/delete', [OrganizationController::class, 'delete']);
@@ -106,10 +98,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/event_member/update', [EventMemberController::class, 'update']);
             Route::post('/event_member/delete', [EventMemberController::class, 'delete']);
        // EVENT MEMBER END
-
-        // EVENT STATUS START
-            Route::get('/unsdg/all', [UnsdgController::class, 'index']);
-        // EVENT STATUS END
 
         // PARTICIPANT START
             Route::get('/participant/all', [ParticipantController::class, 'index']);
