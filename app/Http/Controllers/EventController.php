@@ -9,7 +9,7 @@ class EventController extends Controller
 {
     public function index() {
         try {
-            $events = Event::with('skills')->with('unsdgs')->get();
+            $events = Event::with('skills')->with('unsdgs')->with('eventstatus')->get();
 
             return response()->json([
                 'status' => 200,
@@ -111,6 +111,10 @@ class EventController extends Controller
                 'end_date',
                 'description'
             ]));
+
+            $event->skills()->sync($request->skills);
+            $event->unsdgs()->sync($request->unsdgs);
+
 
             return response()->json([
                 'status' => 200,
