@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
@@ -37,6 +38,7 @@ class OrganizationController extends Controller
                 'status' => 201,
                 'data' => $organization
             ], 201);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' =>  $e->getCode(),
