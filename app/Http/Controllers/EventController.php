@@ -26,7 +26,7 @@ class EventController extends Controller
     public function create(Request $request) {
         $request->validate([
             "user_id" => 'required',
-            "organization_id" => 'required',
+            "organization_id" => 'sometimes',
             'model_id' => 'required',
             "event_type_id" => 'required',
             "event_status_id" => 'required',
