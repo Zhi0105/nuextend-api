@@ -29,7 +29,7 @@ class EventController extends Controller
             "organization_id" => 'sometimes',
             'model_id' => 'required',
             "event_type_id" => 'required',
-            "event_status_id" => 'required',
+            "event_status_id" => 'sometimes',
             "name" => "required|string",
             "address" => "required|string",
             "term" => "required|string",
@@ -66,9 +66,9 @@ class EventController extends Controller
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ],  500);
         }
 
     }
