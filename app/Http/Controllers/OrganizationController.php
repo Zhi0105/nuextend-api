@@ -112,6 +112,23 @@ class OrganizationController extends Controller
             ],  $e->getCode());
         }
     }
+    public function getOrganization($userID) {
+        $user = User::find($userID);
+
+        $organizations = $user->organizations;
+
+        if(!$organizations) {
+            return response()->json([
+                "status" => 404,
+                "message" => "no organization found"
+            ], 404);
+        }
+
+        return response()->json([
+            "status" => 200,
+            "data" => $organizations
+        ], 200);
+    }
     public function members($id) {
         $organization = Organization::find($id);
         $members = $organization->users;
@@ -139,13 +156,6 @@ class OrganizationController extends Controller
 
         $assigner = OrganizationMember::where('user_id', $request->assigner_id)->first();
         $assignee = OrganizationMember::where('user_id', $request->assignee_id)->first();
-        $roles = OrganizationMember::where('user_id', $request->assignee_id)
-        ->whereIn('role_id', [6, 7])
-        ->get()
-        ->keyBy('role_id');
-
-        $hasLeaderRole = $roles->get(6);
-        $hasOrganizerRole = $roles->get(7);
 
         if(!$assigner) {
             return response()->json([
@@ -160,31 +170,36 @@ class OrganizationController extends Controller
             ], 404);
         }
 
-        if(($hasOrganizerRole || $hasLeaderRole) && ($request->assignee_role === 6 || $request->assignee_role === 7)) {
-            return response()->json([
-                "status" => 400,
-                "message" => "must not already be a Leader/Organizer of another organization"
-            ], 400);
-        }
-
         // FOR LEADERS
         if($request->assigner_role === 6) {
-            if($request->assignee_role === 6) {
+            if($request->assignee_role === 6 && $request->assigner_id !== $request->assignee_id) {
                 OrganizationMember::where('user_id', $request->assignee_id)->where('organization_id', $request->organization_id)->update([
                     'role_id' => $request->assignee_role
                 ]);
                 OrganizationMember::where('user_id', $request->assigner_id)->where('organization_id', $request->organization_id)->update([
                     'role_id' => 8
                 ]);
-            } else {
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'role changed successful'
+                ], 200);
+            }
+            else if($request->assignee_role !== 6 && $request->assigner_id !== $request->assignee_id) {
                 OrganizationMember::where('user_id', $request->assignee_id)->where('organization_id', $request->organization_id)->update([
                     'role_id' => $request->assignee_role
                 ]);
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'role changed successful'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'leader cannot change own role'
+                ], 400);
             }
-            return response()->json([
-                'status' => 200,
-                'message' => 'role changed successful'
-            ], 200);
         }
         // FOR ORGANIZERS
         if($request->assigner_role === 7) {
@@ -215,5 +230,34 @@ class OrganizationController extends Controller
                 ], 200);
             }
         }
+    }
+    public function remove_member(Request $request) {
+        $request->validate([
+            "user_id" => 'required',
+            "role" => 'required'
+        ]);
+
+        $member = OrganizationMember::where('user_id', $request->user_id)->first();
+
+        if(!$member) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No member found"
+            ], 404);
+        }
+
+        if($request->role === 6) {
+            return response()->json([
+                "status" => 400,
+                "message" => "Leader cannot leave from organization"
+            ], 400);
+        }
+
+        OrganizationMember::where('user_id', $request->user_id)->where('role_id', $request->role)->delete();
+        return response()->json([
+            "status" => 200,
+            "message" => "member successfully removed!"
+        ], 200);
+
     }
 }
