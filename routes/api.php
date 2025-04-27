@@ -83,7 +83,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/organization/create', [OrganizationController::class, 'create']);
             Route::post('/organization/update', [OrganizationController::class, 'update']);
             Route::post('/organization/delete', [OrganizationController::class, 'delete']);
-       // ORGANIZATION END
+
+            Route::get('/organization/{id}/members', [OrganizationController::class, 'members']);
+            Route::post('/organization/role/change', [OrganizationController::class, 'role_change']);
+            // ORGANIZATION END
 
         // EVENT START
             Route::get('/event/all', [EventController::class, 'index']);
