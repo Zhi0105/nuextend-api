@@ -160,4 +160,68 @@ class EventController extends Controller
             ],  $e->getCode());
         }
     }
+    public function accept(Request $request) {
+        $request->validate([
+            "id" => "required",
+        ]);
+
+        try {
+            $event = Event::find($request->id);
+
+            if(!$event) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No event found"
+                ], 404);
+            }
+
+            Event::where('id', $request->id)->update([
+                'event_status_id' => 2
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                "message" => "Event accepted"
+            ], 200);
+
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' =>  $e->getCode(),
+                'message' => $e->getMessage(),
+            ],  $e->getCode());
+        }
+    }
+    public function reject(Request $request) {
+        $request->validate([
+            "id" => "required",
+        ]);
+
+        try {
+            $event = Event::find($request->id);
+
+            if(!$event) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No event found"
+                ], 404);
+            }
+
+            Event::where('id', $request->id)->update([
+                'event_status_id' => 3
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                "message" => "Event rejected"
+            ], 200);
+
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' =>  $e->getCode(),
+                'message' => $e->getMessage(),
+            ],  $e->getCode());
+        }
+    }
 }

@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
             ModelSeeder::class,
             EventTypeSeeder::class,
             EventStatusSeeder::class,
-            UnsdgSeeder::class
+            UnsdgSeeder::class,
+            UserSeeder::class,
+            OrganizationSeeder::class
         ]);
 
         // \App\Models\User::factory(10)->create();
