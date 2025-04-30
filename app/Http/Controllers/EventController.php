@@ -115,6 +115,9 @@ class EventController extends Controller
             $event->skills()->sync($request->skills);
             $event->unsdgs()->sync($request->unsdgs);
 
+            Event::where('id', $request->id)->update([
+                'event_status_id' => 1
+            ]);
 
             return response()->json([
                 'status' => 200,
@@ -176,7 +179,8 @@ class EventController extends Controller
             }
 
             Event::where('id', $request->id)->update([
-                'event_status_id' => 2
+                'event_status_id' => 2,
+                'remarks' => null
             ]);
 
             return response()->json([
@@ -195,6 +199,7 @@ class EventController extends Controller
     public function reject(Request $request) {
         $request->validate([
             "id" => "required",
+            "remarks" => "required"
         ]);
 
         try {
@@ -208,7 +213,8 @@ class EventController extends Controller
             }
 
             Event::where('id', $request->id)->update([
-                'event_status_id' => 3
+                'event_status_id' => 3,
+                'remarks' => $request->remarks
             ]);
 
             return response()->json([

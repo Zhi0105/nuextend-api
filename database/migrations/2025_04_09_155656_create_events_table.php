@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('start_date');
             $table->string('end_date');
             $table->text('description')->nullable(); // Optional, remove nullable() if required
+            $table->text('remarks')->nullable(); // Optional, remove nullable() if required
             $table->timestamps(); // created_at and updated_at
         });
     }
