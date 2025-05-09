@@ -6,9 +6,11 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventMemberController;
 use App\Http\Controllers\EventStatusController;
 use App\Http\Controllers\EventTypeController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SkillController;
@@ -49,6 +51,12 @@ Route::prefix('v1')->group(function () {
 
 
     Route::middleware('auth:sanctum')->group(function () {
+
+        // FORM UPLOADING START
+            Route::post('/forms', [FormController::class, 'store']);
+        // FORM UPLOADING END
+
+
         // USER START
             Route::get('/user/all', [AuthController::class, 'index']);
             Route::get('/user/{id}', [AuthController::class, 'getUser']);
