@@ -53,6 +53,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
 
         // FORM UPLOADING START
+            Route::get('/form/{id}', [FormController::class, 'index']);
             Route::post('/forms', [FormController::class, 'store']);
         // FORM UPLOADING END
 

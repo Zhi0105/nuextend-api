@@ -8,6 +8,25 @@ use Illuminate\Support\Facades\Storage;
 
 class FormController extends Controller
 {
+
+    public function index($id) {
+        try {
+        $forms = Form::where('event_id', $id)->get();
+
+            return response()->json([
+                'status' => 200,
+                'data' => $forms
+            ], 200);
+
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' =>  $e->getCode(),
+                'message' => $e->getMessage(),
+            ],  $e->getCode());
+        }
+    }
+
     public function store(Request $request) {
         $validated = $request->validate([
             'event_id' => 'required|exists:events,id',
