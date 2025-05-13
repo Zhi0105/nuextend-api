@@ -21,6 +21,8 @@ class RoleSeeder extends Seeder
         Role::create([ 'name' => 'leader' ]);
         Role::create([ 'name' => 'organizer' ]);
         Role::create([ 'name' => 'member' ]);
-
+        Role::create([ 'name' => 'dean' ]);
+        Role::create([ 'name' => 'ASD' ]);
+        Role::create([ 'name' => 'AD' ]);
     }
 }

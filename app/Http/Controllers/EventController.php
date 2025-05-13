@@ -26,6 +26,7 @@ class EventController extends Controller
     public function create(Request $request) {
         $request->validate([
             "user_id" => 'required',
+            'program_model_name' => 'sometimes',
             "organization_id" => 'sometimes',
             'model_id' => 'required',
             "event_type_id" => 'required',
@@ -45,6 +46,7 @@ class EventController extends Controller
         try {
             $event = Event::create([
                 'user_id' => $request->user_id,
+                'program_model_name' => $request->program_model_name,
                 'organization_id' => $request->organization_id,
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
@@ -76,6 +78,7 @@ class EventController extends Controller
         $request->validate([
             "id" => "required",
             "user_id" => 'sometimes',
+            'program_model_name' => 'sometimes',
             "organization_id" => 'sometimes',
             "model_id" => 'sometimes',
             "event_type_id" => 'sometimes',
@@ -100,6 +103,7 @@ class EventController extends Controller
 
             $event->update($request->only([
                 'user_id',
+                'program_model_name',
                 'organization_id',
                 'model_id',
                 'event_type_id',

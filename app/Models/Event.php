@@ -12,6 +12,7 @@ class Event extends Model
 
     protected $table = 'events';
     protected $fillable = [
+        'program_model_name',
         'user_id',
         'organization_id',
         'model_id',

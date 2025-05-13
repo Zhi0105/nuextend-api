@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('model_id')->nullable();
             $table->unsignedBigInteger('event_type_id')->nullable();
             $table->unsignedBigInteger('event_status_id')->nullable();
+            $table->string('program_model_name')->nullable();
             $table->string('name');
             $table->string('address');
             $table->string('term');
