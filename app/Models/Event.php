@@ -18,6 +18,7 @@ class Event extends Model
         'model_id',
         'event_type_id',
         'event_status_id',
+        'target_group_id',
         'name',
         'term',
         'address',
@@ -60,5 +61,8 @@ class Event extends Model
     }
     public function forms() {
         return $this->hasMany(Form::class, 'event_id');
+    }
+    public function targetgroup() {
+        return $this->belongsTo(Targetgroup::class, 'target_group_id');
     }
 }

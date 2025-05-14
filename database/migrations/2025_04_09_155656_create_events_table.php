@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('model_id')->nullable();
             $table->unsignedBigInteger('event_type_id')->nullable();
             $table->unsignedBigInteger('event_status_id')->nullable();
+            $table->unsignedBigInteger('target_group_id')->nullable(); // step 1: make it nullable
             $table->string('program_model_name')->nullable();
             $table->string('name');
             $table->string('address');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->string('end_date');
             $table->text('description')->nullable(); // Optional, remove nullable() if required
             $table->text('remarks')->nullable(); // Optional, remove nullable() if required
+
             $table->timestamps(); // created_at and updated_at
         });
     }

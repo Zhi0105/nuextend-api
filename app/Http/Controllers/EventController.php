@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Targetgroup;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
     public function index() {
         try {
-            $events = Event::with('skills')->with(['unsdgs', 'eventstatus', 'user', 'eventtype', 'model', 'organization', 'skills', 'unsdgs', 'participants'])->get();
+            $events = Event::with('skills')->with(['unsdgs', 'eventstatus', 'user', 'eventtype', 'model', 'organization', 'skills', 'unsdgs', 'participants', 'targetgroup'])->get();
 
             return response()->json([
                 'status' => 200,
@@ -27,10 +28,12 @@ class EventController extends Controller
         $request->validate([
             "user_id" => 'required',
             'program_model_name' => 'sometimes',
+            'target_group_name' => 'sometimes|unique:target_groups,name,',
             "organization_id" => 'sometimes',
             'model_id' => 'required',
             "event_type_id" => 'required',
             "event_status_id" => 'sometimes',
+            "target_group_id" => 'sometimes',
             "name" => "required|string",
             "address" => "required|string",
             "term" => "required|string",
@@ -44,6 +47,13 @@ class EventController extends Controller
         ]);
 
         try {
+
+            if ($request->target_group_name) {
+                $targetGroup = Targetgroup::firstOrCreate([
+                    'name' => $request->target_group_name
+                ]);
+            }
+
             $event = Event::create([
                 'user_id' => $request->user_id,
                 'program_model_name' => $request->program_model_name,
@@ -51,6 +61,7 @@ class EventController extends Controller
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
                 'event_status_id' => $request->event_status_id,
+                'target_group_id' => $targetGroup->id ?? $request->target_group_id,
                 'name' => $request->name,
                 'address' => $request->address,
                 'term' => $request->term,
