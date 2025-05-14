@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Targetgroup;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -178,6 +179,22 @@ class EventController extends Controller
             ],  $e->getCode());
         }
     }
+    public function getEvent($userID) {
+        $user = User::with('organizations.events.eventstatus')->find($userID);
+        $events = $user->organizations->flatMap->events;
+
+        if(!$events) {
+            return response()->json([
+                "status" => 404,
+                "message" => "no event found"
+            ], 404);
+        }
+
+        return response()->json([
+            "status" => 200,
+            "data" => $events
+        ], 200);
+}
     public function accept(Request $request) {
         $request->validate([
             "id" => "required",

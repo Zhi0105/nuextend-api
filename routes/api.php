@@ -104,6 +104,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/event/create', [EventController::class, 'create']);
             Route::post('/event/update', [EventController::class, 'update']);
             Route::post('/event/delete', [EventController::class, 'delete']);
+            Route::get('/event/{userID}', [EventController::class, 'getEvent']);
             Route::post('/event/accept', [EventController::class, 'accept']);
             Route::post('/event/reject', [EventController::class, 'reject']);
 
