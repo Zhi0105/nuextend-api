@@ -180,20 +180,53 @@ class EventController extends Controller
         }
     }
     public function getEvent($userID) {
-        $user = User::with('organizations.events.eventstatus')->find($userID);
-        $events = $user->organizations->flatMap->events;
 
-        if(!$events) {
+        $user = User::with('organizations')->find($userID);
+
+        if (!$user || $user->organizations->isEmpty()) {
             return response()->json([
                 "status" => 404,
-                "message" => "no event found"
+                "message" => "No events found for this user"
             ], 404);
         }
+
+        // Get organization IDs related to the user
+        $organizationIds = $user->organizations->pluck('id');
+
+        // Get events where organization_id is in those IDs and eager load everything
+        $events = Event::whereIn('organization_id', $organizationIds)
+            ->with([
+                'skills',
+                'unsdgs',
+                'eventstatus',
+                'user',
+                'eventtype',
+                'model',
+                'organization',
+                'participants',
+                'targetgroup'
+            ])
+            ->get();
 
         return response()->json([
             "status" => 200,
             "data" => $events
         ], 200);
+
+        // $user = User::with('organizations.events.eventstatus')->find($userID);
+        // $events = $user->organizations->flatMap->events;
+
+        // if(!$events) {
+        //     return response()->json([
+        //         "status" => 404,
+        //         "message" => "no event found"
+        //     ], 404);
+        // }
+
+        // return response()->json([
+        //     "status" => 200,
+        //     "data" => $events
+        // ], 200);
 }
     public function accept(Request $request) {
         $request->validate([
