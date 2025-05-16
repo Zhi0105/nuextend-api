@@ -56,6 +56,8 @@ Route::prefix('v1')->group(function () {
         // FORM UPLOADING START
             Route::get('/form/{id}', [FormController::class, 'index']);
             Route::post('/forms', [FormController::class, 'store']);
+            Route::post('/form/approve', [FormController::class, 'approve']);
+            Route::post('/form/reject', [FormController::class, 'reject']);
         // FORM UPLOADING END
 
 

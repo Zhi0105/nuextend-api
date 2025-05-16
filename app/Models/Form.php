@@ -17,7 +17,10 @@ class Form extends Model
         'file',
         'is_dean',
         'is_asd',
-        'is_ad'
+        'is_ad',
+        'dean_remarks',
+        'asd_remarks',
+        'ad_remarks'
     ];
     protected $casts = [
         'is_dean' => 'boolean',

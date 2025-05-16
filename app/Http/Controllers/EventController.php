@@ -180,15 +180,14 @@ class EventController extends Controller
         }
     }
     public function getEvent($userID) {
-
         $user = User::with('organizations')->find($userID);
 
-        if (!$user || $user->organizations->isEmpty()) {
-            return response()->json([
-                "status" => 404,
-                "message" => "No events found for this user"
-            ], 404);
-        }
+        // if (!$user || $user->organizations->isEmpty()) {
+        //     return response()->json([
+        //         "status" => 404,
+        //         "message" => "No events found for this user"
+        //     ], 404);
+        // }
 
         // Get organization IDs related to the user
         $organizationIds = $user->organizations->pluck('id');
@@ -227,7 +226,7 @@ class EventController extends Controller
         //     "status" => 200,
         //     "data" => $events
         // ], 200);
-}
+    }
     public function accept(Request $request) {
         $request->validate([
             "id" => "required",
