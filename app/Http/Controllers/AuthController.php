@@ -16,7 +16,7 @@ class AuthController extends Controller
                 "password" => "required",
             ]);
 
-            $user = User::where('email', $request->email)->with('organizations')->first();
+            $user = User::where('email', $request->email)->with(['organizations', 'skill'])->first();
 
             if($user && Hash::check($request->password, $user->password)) {
 
@@ -104,6 +104,8 @@ class AuthController extends Controller
             "lastname" => "sometimes",
             "email" => "sometimes",
             "contact" => "sometimes",
+            'skills' => 'array|sometimes',
+            'skills.*' => 'integer|exists:skills,id'
         ]);
 
         try {
@@ -128,17 +130,21 @@ class AuthController extends Controller
                 'contact',
             ]));
 
+            $user->skill()->sync($request->skills);
+            $user->load('skill');
+
             return response()->json([
                 'status' => 200,
                 'message' => 'User successfully updated',
+                'data' => $user,
             ], 200);
 
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
     }
     public function delete(Request $request) {
