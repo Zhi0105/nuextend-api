@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Participant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ParticipantController extends Controller
@@ -24,28 +25,34 @@ class ParticipantController extends Controller
         }
     }
     public function create(Request $request) {
+
         $request->validate([
-            "user_id" => 'required',
-            "event_id" => 'required',
-            "is_attended" => "required|boolean",
+                "user_id" => 'required',
+                "event_id" => 'required',
         ]);
 
         try {
-            $participant = Participant::create([
+            // 1. Create the Participant
+            $participant = Participant::updateOrCreate([
                 'user_id' => $request->user_id,
                 'event_id' => $request->event_id,
-                'is_attended' => $request->is_attended
             ]);
 
+            // 2. Get upcoming events this user is participating in
+            $upcomingEvents = Participant::with('event')->where('user_id', $request->user_id)->get();
+
+            // 3. Return both participant info and upcoming events
             return response()->json([
                 'status' => 201,
-                'data' => $participant
+                'participant' => $participant,
+                'upcoming_events' => $upcomingEvents
             ], 201);
+
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => $e->getCode() ?: 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], $e->getCode() ?: 500);
         }
 
     }
@@ -54,7 +61,6 @@ class ParticipantController extends Controller
             "id" => "required",
             'user_id' => 'sometimes',
             'event_id' => 'sometimes',
-            "is_attended" => "sometimes"
         ]);
 
         try {
@@ -70,7 +76,6 @@ class ParticipantController extends Controller
             $participant->update($request->only([
                 'user_id',
                 'event_id',
-                'is_attended',
             ]));
 
             return response()->json([
