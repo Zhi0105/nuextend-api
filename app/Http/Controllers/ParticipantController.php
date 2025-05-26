@@ -122,4 +122,28 @@ class ParticipantController extends Controller
             ],  $e->getCode());
         }
     }
+    public function getParticipantEvents($id) {
+        try {
+
+            $upcomingEvents = Participant::with('event')->where('user_id', $id)->get();
+
+            if(!$upcomingEvents) {
+                return response()->json([
+                    'status' => 200,
+                    'upcoming_events' => $upcomingEvents
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'upcoming_events' => $upcomingEvents
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => $e->getCode() ?: 500,
+                'message' => $e->getMessage(),
+            ], $e->getCode() ?: 500);
+        }
+    }
 }

@@ -49,6 +49,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/organization/all', [OrganizationController::class, 'index']);
     Route::get('/skill/all', [SkillController::class, 'index']);
     Route::get('/targetgroup/all', [TargetgroupController::class, 'index']);
+    Route::get('/participant/events/{id}', [ParticipantController::class, 'getParticipantEvents']);
 
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -124,6 +125,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/participant/create', [ParticipantController::class, 'create']);
             Route::post('/participant/update', [ParticipantController::class, 'update']);
             Route::post('/participant/delete', [ParticipantController::class, 'delete']);
+
         // PARTICIPANT END
 
     });
