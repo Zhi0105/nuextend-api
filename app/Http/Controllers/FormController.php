@@ -11,7 +11,7 @@ class FormController extends Controller
 
     public function index($id) {
         try {
-        $forms = Form::where('event_id', $id)->get();
+        $forms = Form::where('event_id', $id)->with(['deanApprover', 'asdApprover', 'adApprover'])->get();
 
             return response()->json([
                 'status' => 200,
@@ -78,10 +78,12 @@ class FormController extends Controller
                 ], 404);
             }
 
+            $userId = auth()->id(); // current logged-in user
+
             $roleUpdateMap = [
-                9  => ['is_dean' => true, 'dean_remarks' => null],
-                10 => ['is_asd' => true, 'asd_remarks' => null],
-                11 => ['is_ad' => true, 'ad_remarks' => null],
+                9  => ['is_dean' => true, 'dean_remarks' => null, 'dean_approved_by' => $userId],
+                10 => ['is_asd' => true, 'asd_remarks' => null, 'asd_approved_by' => $userId],
+                11 => ['is_ad' => true, 'ad_remarks' => null, 'ad_approved_by' => $userId],
             ];
 
             if (isset($roleUpdateMap[$request->role_id])) {

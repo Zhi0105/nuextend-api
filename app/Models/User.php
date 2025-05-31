@@ -78,4 +78,14 @@ class User extends Authenticatable
     public function participants() {
         return $this->hasMany(Participant::class, 'user_id');
     }
+    public function deanApprovedForms() {
+        return $this->hasMany(Form::class, 'dean_approved_by');
+    }
+    public function asdApprovedForms() {
+        return $this->hasMany(Form::class, 'asd_approved_by');
+    }
+    public function adApprovedForms() {
+        return $this->hasMany(Form::class, 'ad_approved_by');
+    }
+
 }

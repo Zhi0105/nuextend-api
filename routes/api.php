@@ -125,6 +125,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/participant/create', [ParticipantController::class, 'create']);
             Route::post('/participant/update', [ParticipantController::class, 'update']);
             Route::post('/participant/delete', [ParticipantController::class, 'delete']);
+            Route::post('/participant/attendance', [ParticipantController::class, 'attendance']);
+
 
         // PARTICIPANT END
 

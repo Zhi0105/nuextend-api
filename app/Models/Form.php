@@ -20,7 +20,10 @@ class Form extends Model
         'is_ad',
         'dean_remarks',
         'asd_remarks',
-        'ad_remarks'
+        'ad_remarks',
+        'dean_approved_by',
+        'asd_approved_by',
+        'ad_approved_by'
     ];
     protected $casts = [
         'is_dean' => 'boolean',
@@ -30,5 +33,14 @@ class Form extends Model
 
     public function events() {
         return $this->belongsTo(Event::class, 'event_id');
+    }
+    public function deanApprover() {
+        return $this->belongsTo(User::class, 'dean_approved_by');
+    }
+    public function asdApprover() {
+        return $this->belongsTo(User::class, 'asd_approved_by');
+    }
+    public function adApprover() {
+        return $this->belongsTo(User::class, 'ad_approved_by');
     }
 }

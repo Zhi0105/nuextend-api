@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Participant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -138,6 +139,34 @@ class ParticipantController extends Controller
                 'status' => 200,
                 'upcoming_events' => $upcomingEvents
             ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => $e->getCode() ?: 500,
+                'message' => $e->getMessage(),
+            ], $e->getCode() ?: 500);
+        }
+    }
+    public function attendance(Request $request) {
+
+        $request->validate([
+            "participant_id" => 'required',
+            "attendance_date" => 'required',
+            "is_attended" => 'required'
+        ]);
+
+        try {
+            $attendanceLog = Attendance::updateOrCreate([
+                'participant_id' => $request->participant_id,
+                'attendance_date' => $request->attendance_date,
+            ], [
+                'is_attended' => $request->is_attended
+            ]);
+
+            return response()->json([
+                'status' => 201,
+                'data' => $attendanceLog
+            ], 201);
 
         } catch (\Exception $e) {
             return response()->json([
