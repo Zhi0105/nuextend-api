@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventMemberController;
 use App\Http\Controllers\EventStatusController;
@@ -18,7 +19,8 @@ use App\Http\Controllers\TargetgroupController;
 use App\Http\Controllers\UnsdgController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -52,7 +54,14 @@ Route::prefix('v1')->group(function () {
     Route::get('/participant/events/{id}', [ParticipantController::class, 'getParticipantEvents']);
 
 
-    Route::middleware('auth:sanctum')->group(function () {
+    // EMAIL VERIFICATION
+        Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum')->name('verification.send');;
+        Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+        Route::get('/email/verify-status', [EmailVerificationController::class, 'verifyStatus'])->middleware('auth:sanctum');
+    // EMAIL VERIFICATION
+
+
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         // FORM UPLOADING START
             Route::get('/form/{id}', [FormController::class, 'index']);

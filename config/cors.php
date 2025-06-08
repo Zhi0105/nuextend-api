@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://nuextend-web.vercel.app'],
+    'allowed_origins' => ['http://localhost:3000', 'https://nuextend-web.vercel.app', 'http://localhost:5173'],
 
     'allowed_origins_patterns' => [],
 

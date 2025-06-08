@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'middlename' => 'admin',
             'lastname' => 'admin',
             'email' => 'admin@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
             'password' => bcrypt('admin123'),
             'contact' => '21387129831983'
         ]);
@@ -29,6 +30,7 @@ class UserSeeder extends Seeder
             'middlename' => 'asd',
             'lastname' => 'asd',
             'email' => 'asd@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
             'password' => bcrypt('asd123'),
             'contact' => '09999999999'
         ]);
@@ -39,6 +41,7 @@ class UserSeeder extends Seeder
             'middlename' => 'ad',
             'lastname' => 'ad',
             'email' => 'ad@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
             'password' => bcrypt('ad123'),
             'contact' => '09999999999'
         ]);

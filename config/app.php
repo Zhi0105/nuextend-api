@@ -5,6 +5,9 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
+    'frontend_web_url' => env('FRONTEND_WEB_URL', 'https://localhost:3000'),
+    'frontend_mobile_url' => env('FRONTEND_MOBILE_URL', 'yourapp://'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
