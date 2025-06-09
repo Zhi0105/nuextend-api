@@ -151,16 +151,14 @@ class ParticipantController extends Controller
 
         $request->validate([
             "participant_id" => 'required',
-            "attendance_date" => 'required',
-            "is_attended" => 'required'
         ]);
 
         try {
             $attendanceLog = Attendance::updateOrCreate([
                 'participant_id' => $request->participant_id,
-                'attendance_date' => $request->attendance_date,
+                'attendance_date' => now(),
             ], [
-                'is_attended' => $request->is_attended
+                'is_attended' => true
             ]);
 
             return response()->json([
