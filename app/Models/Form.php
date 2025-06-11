@@ -15,15 +15,22 @@ class Form extends Model
         'name',
         'code',
         'file',
+        'is_commex',
         'is_dean',
         'is_asd',
         'is_ad',
+        'commex_remarks',
         'dean_remarks',
         'asd_remarks',
         'ad_remarks',
+        'commex_approved_by',
         'dean_approved_by',
         'asd_approved_by',
-        'ad_approved_by'
+        'ad_approved_by',
+        'commex_approve_date',
+        'dean_approve_date',
+        'asd_approve_date',
+        'ad_approve_date'
     ];
     protected $casts = [
         'is_dean' => 'boolean',
@@ -33,6 +40,9 @@ class Form extends Model
 
     public function events() {
         return $this->belongsTo(Event::class, 'event_id');
+    }
+    public function commexApprover() {
+        return $this->belongsTo(User::class, 'commex_approved_by');
     }
     public function deanApprover() {
         return $this->belongsTo(User::class, 'dean_approved_by');

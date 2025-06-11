@@ -24,6 +24,8 @@ class Event extends Model
         'address',
         'start_date',
         'end_date',
+        'remarks',
+        'approve_date',
         'description'
     ];
 

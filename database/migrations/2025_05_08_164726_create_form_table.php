@@ -20,9 +20,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('code');
             $table->string('file'); // Assuming this stores the path to the PDF
+            $table->boolean('is_commex')->default(false);
             $table->boolean('is_dean')->default(false);
             $table->boolean('is_asd')->default(false);
             $table->boolean('is_ad')->default(false);
+            $table->text('commex_remarks')->nullable();
             $table->text('dean_remarks')->nullable();
             $table->text('asd_remarks')->nullable();
             $table->text('ad_remarks')->nullable();

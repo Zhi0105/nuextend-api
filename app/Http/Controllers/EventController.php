@@ -257,7 +257,8 @@ class EventController extends Controller
 
             Event::where('id', $request->id)->update([
                 'event_status_id' => 2,
-                'remarks' => null
+                'remarks' => null,
+                'approve_date' => now()
             ]);
 
             return response()->json([

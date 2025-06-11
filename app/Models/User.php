@@ -80,6 +80,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function participants() {
         return $this->hasMany(Participant::class, 'user_id');
     }
+    public function commexApprovedForms() {
+        return $this->hasOne(Form::class, 'commex_approved_by');
+    }
     public function deanApprovedForms() {
         return $this->hasMany(Form::class, 'dean_approved_by');
     }
