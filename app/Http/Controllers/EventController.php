@@ -11,7 +11,18 @@ class EventController extends Controller
 {
     public function index() {
         try {
-            $events = Event::with('skills')->with(['unsdgs', 'eventstatus', 'user', 'eventtype', 'model', 'organization', 'skills', 'unsdgs', 'participants', 'targetgroup'])->get();
+            $events = Event::with('skills')->with([
+                'unsdgs',
+                'eventstatus',
+                'user',
+                'eventtype',
+                'model',
+                'organization',
+                'skills',
+                'unsdgs',
+                'participants.user',
+                'participants.attendance',
+                'participants.event', 'targetgroup'])->get();
 
             return response()->json([
                 'status' => 200,
