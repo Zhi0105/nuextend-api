@@ -202,7 +202,9 @@ class EventController extends Controller
                 'eventtype',
                 'model',
                 'organization',
-                'participants',
+                'participants.user',
+                'participants.attendance',
+                'participants.event',
                 'targetgroup'
             ])
             ->get();
