@@ -13,9 +13,8 @@ class EventStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        EventStatus::create([ 'name' => 'pending' ]);
         EventStatus::create([ 'name' => 'active' ]);
-        EventStatus::create([ 'name' => 'declined' ]);
+        EventStatus::create([ 'name' => 'completed' ]);
         // WALA PANG NAIISIP NA ILALAGAY
     }
 }

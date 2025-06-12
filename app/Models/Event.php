@@ -63,7 +63,7 @@ class Event extends Model
         return $this->hasMany(Participant::class, 'event_id');
     }
     public function forms() {
-        return $this->hasMany(Form::class, 'event_id');
+        return $this->belongsToMany(Form::class, 'event_form')->withTimestamps();
     }
     public function targetgroup() {
         return $this->belongsTo(Targetgroup::class, 'target_group_id');

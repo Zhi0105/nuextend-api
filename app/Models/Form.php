@@ -39,7 +39,7 @@ class Form extends Model
     ];
 
     public function events() {
-        return $this->belongsTo(Event::class, 'event_id');
+        return $this->belongsToMany(Event::class, 'event_form')->withTimestamps();
     }
     public function commexApprover() {
         return $this->belongsTo(User::class, 'commex_approved_by');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,28 +12,55 @@ class FormController extends Controller
 
     public function index($id) {
         try {
-        $forms = Form::where('event_id', $id)->with(['commexApprover', 'deanApprover', 'asdApprover', 'adApprover'])->get();
+            $event = Event::with(['forms.commexApprover', 'forms.deanApprover', 'forms.asdApprover', 'forms.adApprover'])->findOrFail($id);
+
+            return response()->json([
+                'status' => 200,
+                'data' => $event->forms
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => $e->getCode() ?: 500,
+                'message' => $e->getMessage(),
+            ], $e->getCode() ?: 500);
+        }
+    }
+    public function getProgramForm ($model_id) {
+        try {
+            // Get event IDs with the given model_id
+            $eventIds = Event::where('model_id', $model_id)->pluck('id');
+
+            // Fetch forms that are connected to those event IDs and load related events
+            $forms = Form::whereHas('events', function ($query) use ($eventIds) {
+                    $query->whereIn('events.id', $eventIds);
+                })
+                ->with(['events' => function ($query) use ($eventIds) {
+                    $query->whereIn('events.id', $eventIds);
+                }])
+                ->get();
 
             return response()->json([
                 'status' => 200,
                 'data' => $forms
             ], 200);
 
-
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => $e->getCode() ?: 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], $e->getCode() ?: 500);
         }
     }
     public function store(Request $request) {
         $validated = $request->validate([
             'event_id' => 'required|exists:events,id',
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:forms,code',
+            'code' => 'required|string|max:255',
             'file' => 'required|file|mimes:pdf|max:10240', // Max 10MB
         ]);
+
+        $event = Event::with('user')->find($validated['event_id']);
 
         if (!$request->hasFile('file')) {
             return response()->json([
@@ -43,45 +71,31 @@ class FormController extends Controller
         $path = $request->file('file')->store('public/pdf');
         $url = Storage::url($path); // public URL
 
-        // Get last numeric part of the code
-        preg_match('/(\d+)$/', $validated['code'], $matches);
-        $lastDigit = isset($matches[1]) ? (int)$matches[1] : null;
-
-        // Default all true
-        $approvers = [
-            'is_commex' => true,
-            'is_dean' => true,
-            'is_asd' => true,
-            'is_ad' => true,
-        ];
-
-        // Apply specific rules
-        if (in_array($lastDigit, [4, 5])) {
-            $approvers = [
-                'is_commex' => false,
-                'is_dean' => false,
-                'is_asd' => false,
-                'is_ad' => true,
-            ];
-        } elseif (in_array($lastDigit, [11, 12])) {
-            $approvers = [
-                'is_commex' => false,
-                'is_dean' => true,
-                'is_asd' => false,
-                'is_ad' => true,
-            ];
-        }
-
         $form = Form::create([
-            'event_id' => $validated['event_id'],
             'name' => $validated['name'],
             'code' => $validated['code'],
             'file' => asset($url),
-            'is_commex' => $approvers['is_commex'],
-            'is_dean' => $approvers['is_dean'],
-            'is_asd' => $approvers['is_asd'],
-            'is_ad' => $approvers['is_ad'],
         ]);
+
+        // Attach the form to the event via pivot table
+        $form->events()->attach($validated['event_id']);
+
+
+        // COMMEX START
+        if ($event && $event->user && $event->user->role_id === 1) {
+            $userId = auth()->id(); // Get current logged-in user ID
+
+            $form->update([
+                'is_commex' => true,
+                'commex_approved_by' => $userId,
+                'commex_approve_date' => now(),
+                'is_dean' => true,
+                'dean_approved_by' => $userId,
+                'dean_approve_date' => now(),
+            ]);
+        }
+        // COMMEX END
+
 
         return response()->json([
             'message' => 'Uploaded successfully',
@@ -172,6 +186,42 @@ class FormController extends Controller
                 'status' => 200,
                 'message' => 'Form Rejected',
             ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function attachToEvent(Request $request) {
+
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'form_id' => 'required|exists:forms,id',
+        ]);
+
+        try {
+            $form = Form::findOrFail($request->form_id);
+            $event = Event::findOrFail($request->event_id);
+
+            // Check if already attached
+            if ($form->events()->where('events.id', $event->id)->exists()) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => 'Form is already attached to the event.',
+                ], 409);
+            }
+
+            // Attach form to event
+            $form->events()->attach($event->id);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Form successfully attached to event.',
+                'form' => $form,
+                'event' => $event
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
