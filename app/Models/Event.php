@@ -25,6 +25,7 @@ class Event extends Model
         'start_date',
         'end_date',
         'remarks',
+        'is_posted',
         'approve_date',
         'description'
     ];

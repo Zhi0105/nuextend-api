@@ -308,4 +308,36 @@ class EventController extends Controller
             ],  $e->getCode());
         }
     }
+    public function posted(Request $request) {
+        $request->validate([
+            "id" => "required",
+        ]);
+
+        try {
+            $event = Event::find($request->id);
+
+            if(!$event) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No event found"
+                ], 404);
+            }
+
+            Event::where('id', $request->id)->update([
+                'is_posted' => true
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                "message" => "Event posted"
+            ], 200);
+
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' =>  $e->getCode(),
+                'message' => $e->getMessage(),
+            ],  $e->getCode());
+        }
+    }
 }

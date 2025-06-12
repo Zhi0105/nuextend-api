@@ -32,9 +32,6 @@ class FormController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255|unique:forms,code',
             'file' => 'required|file|mimes:pdf|max:10240', // Max 10MB
-            'is_dean' => 'boolean|sometimes',
-            'is_asd' => 'boolean|sometimes',
-            'is_ad' => 'boolean|sometimes',
         ]);
 
         if (!$request->hasFile('file')) {
@@ -44,18 +41,48 @@ class FormController extends Controller
         }
 
         $path = $request->file('file')->store('public/pdf');
-        $url = Storage::url($path); // This gives you a browser-accessible URL
+        $url = Storage::url($path); // public URL
 
-        // Create the form entry
+        // Get last numeric part of the code
+        preg_match('/(\d+)$/', $validated['code'], $matches);
+        $lastDigit = isset($matches[1]) ? (int)$matches[1] : null;
+
+        // Default all true
+        $approvers = [
+            'is_commex' => true,
+            'is_dean' => true,
+            'is_asd' => true,
+            'is_ad' => true,
+        ];
+
+        // Apply specific rules
+        if (in_array($lastDigit, [4, 5])) {
+            $approvers = [
+                'is_commex' => false,
+                'is_dean' => false,
+                'is_asd' => false,
+                'is_ad' => true,
+            ];
+        } elseif (in_array($lastDigit, [11, 12])) {
+            $approvers = [
+                'is_commex' => false,
+                'is_dean' => true,
+                'is_asd' => false,
+                'is_ad' => true,
+            ];
+        }
+
         $form = Form::create([
             'event_id' => $validated['event_id'],
             'name' => $validated['name'],
             'code' => $validated['code'],
             'file' => asset($url),
-            'is_dean' => $request->boolean('is_dean'),
-            'is_asd' => $request->boolean('is_asd'),
-            'is_ad' => $request->boolean('is_ad'),
+            'is_commex' => $approvers['is_commex'],
+            'is_dean' => $approvers['is_dean'],
+            'is_asd' => $approvers['is_asd'],
+            'is_ad' => $approvers['is_ad'],
         ]);
+
         return response()->json([
             'message' => 'Uploaded successfully',
             'form' => $form
