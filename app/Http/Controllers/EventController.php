@@ -61,8 +61,9 @@ class EventController extends Controller
         try {
 
             if ($request->target_group_name) {
-                $targetGroup = Targetgroup::firstOrCreate([
-                    'name' => $request->target_group_name
+                $targetGroup = Targetgroup::create([
+                    'name' => $request->target_group_name,
+                    'organization_id' => $request->organization_id
                 ]);
             }
 
