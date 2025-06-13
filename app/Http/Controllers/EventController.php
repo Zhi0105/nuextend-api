@@ -316,65 +316,64 @@ class EventController extends Controller
         try {
             $event = Event::find($request->id);
 
-            if(!$event) {
+            if (!$event) {
                 return response()->json([
                     'status' => 404,
                     'message' => "No event found"
                 ], 404);
             }
 
-            $form = $event->forms()->first();
+            $forms = $event->forms;
 
-            if (!$form) {
+            if ($forms->isEmpty()) {
                 return response()->json([
                     'status' => 404,
                     'message' => "No form associated with this event"
                 ], 404);
             }
 
-            // Check and update each field if it's not yet approved
-            if (!$form->is_commex) {
-                $form->is_commex = 1;
-                $form->commex_approved_by = 1;
-                $form->commex_approve_date = now();
+            foreach ($forms as $form) {
+                if (!$form->is_commex) {
+                    $form->is_commex = 1;
+                    $form->commex_approved_by = 1;
+                    $form->commex_approve_date = now();
+                }
+
+                if (!$form->is_dean) {
+                    $form->is_dean = 1;
+                    $form->dean_approved_by = 1;
+                    $form->dean_approve_date = now();
+                }
+
+                if (!$form->is_asd) {
+                    $form->is_asd = 1;
+                    $form->asd_approved_by = 1;
+                    $form->asd_approve_date = now();
+                }
+
+                if (!$form->is_ad) {
+                    $form->is_ad = 1;
+                    $form->ad_approved_by = 1;
+                    $form->ad_approve_date = now();
+                }
+
+                $form->save();
             }
 
-            if (!$form->is_dean) {
-                $form->is_dean = 1;
-                $form->dean_approved_by = 1;
-                $form->dean_approve_date = now();
-            }
-
-            if (!$form->is_asd) {
-                $form->is_asd = 1;
-                $form->asd_approved_by = 1;
-                $form->asd_approve_date = now();
-            }
-
-            if (!$form->is_ad) {
-                $form->is_ad = 1;
-                $form->ad_approved_by = 1;
-                $form->ad_approve_date = now();
-            }
-
-            Event::where('id', $request->id)->update([
+            $event->update([
                 'is_posted' => true
             ]);
 
-            $form->save();
-
-
             return response()->json([
                 'status' => 200,
-                "message" => "Event posted"
+                "message" => "Event and associated forms posted"
             ], 200);
-
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
     }
 }
