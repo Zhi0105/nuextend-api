@@ -15,6 +15,8 @@ class EventController extends Controller
                 'unsdgs',
                 'eventstatus',
                 'user',
+                'user.department',
+                'user.program',
                 'eventtype',
                 'model',
                 'organization',
