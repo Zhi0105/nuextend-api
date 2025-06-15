@@ -379,4 +379,35 @@ class EventController extends Controller
             ], 500);
         }
     }
+    public function terminate(Request $request) {
+        $request->validate([
+            "id" => "required",
+        ]);
+
+        try {
+            $event = Event::find($request->id);
+
+            if (!$event) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No event found"
+                ], 404);
+            }
+
+            $event->update([
+                'event_status_id' => 2
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                "message" => "Event successfully terminated."
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

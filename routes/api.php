@@ -122,6 +122,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/event/accept', [EventController::class, 'accept']);
             Route::post('/event/reject', [EventController::class, 'reject']);
             Route::post('/event/post', [EventController::class, 'posted']);
+            Route::post('/event/terminate', [EventController::class, 'terminate']);
 
         // EVENT END
 
