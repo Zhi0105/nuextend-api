@@ -12,22 +12,15 @@ class Event extends Model
 
     protected $table = 'events';
     protected $fillable = [
-        'program_model_name',
         'user_id',
         'organization_id',
         'model_id',
         'event_type_id',
         'event_status_id',
         'target_group_id',
-        'name',
         'term',
-        'address',
-        'start_date',
-        'end_date',
-        'remarks',
+        'budget_proposal',
         'is_posted',
-        'approve_date',
-        'description'
     ];
 
 
@@ -67,5 +60,8 @@ class Event extends Model
     }
     public function targetgroup() {
         return $this->belongsTo(Targetgroup::class, 'target_group_id');
+    }
+    public function activity() {
+        return $this->hasMany(Activity::class, 'event_id');
     }
 }

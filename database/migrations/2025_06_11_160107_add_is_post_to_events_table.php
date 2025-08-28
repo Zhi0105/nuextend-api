@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->boolean('is_posted')->default(false)->after('remarks');
+            $table->boolean('is_posted')->default(false)->after('term');
         });
     }
 

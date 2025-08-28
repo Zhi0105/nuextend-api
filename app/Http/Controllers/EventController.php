@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Event;
 use App\Models\Targetgroup;
 use App\Models\User;
@@ -12,6 +13,8 @@ class EventController extends Controller
     public function index() {
         try {
             $events = Event::with('skills')->with([
+                'forms',
+                'activity',
                 'unsdgs',
                 'eventstatus',
                 'user',
@@ -41,23 +44,24 @@ class EventController extends Controller
     public function create(Request $request) {
         $request->validate([
             "user_id" => 'required',
-            'program_model_name' => 'sometimes',
-            'target_group_name' => 'sometimes|unique:target_groups,name,',
             "organization_id" => 'sometimes',
             'model_id' => 'required',
             "event_type_id" => 'required',
             "event_status_id" => 'sometimes',
             "target_group_id" => 'sometimes',
-            "name" => "required|string",
-            "address" => "required|string",
             "term" => "required|string",
-            "start_date" => "required|string",
-            "end_date" => "required|string",
-            "description" => "required|string",
+            "budget_proposal" => "sometimes",
             'skills' => 'array',
             'skills.*' => 'integer|exists:skills,id',
             'unsdgs' => 'array',
-            'unsdgs.*' => 'integer|exists:unsdgs,id'
+            'unsdgs.*' => 'integer|exists:unsdgs,id',
+            'activities' => 'array',
+            'activities.*.name' => 'required|string',
+            'activities.*.description' => 'required|string',
+            'activities.*.address' => 'required|string',
+            'activities.*.start_date' => 'required|string',
+            'activities.*.end_date' => 'required|string',
+
         ]);
 
         try {
@@ -71,19 +75,25 @@ class EventController extends Controller
 
             $event = Event::create([
                 'user_id' => $request->user_id,
-                'program_model_name' => $request->program_model_name,
                 'organization_id' => $request->organization_id,
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
                 'event_status_id' => 1,
                 'target_group_id' => $targetGroup->id ?? $request->target_group_id,
-                'name' => $request->name,
-                'address' => $request->address,
                 'term' => $request->term,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'description' => $request->description,
+                'budget_proposal' => $request->budget_proposal
             ]);
+
+            foreach ($request->activities as $activity) {
+                Activity::create([
+                    'event_id' => $event->id,
+                    'name' => $activity['name'],
+                    'address' => $activity['address'],
+                    'start_date' => $activity['start_date'],
+                    'end_date' => $activity['end_date'],
+                    'description' => $activity['description'],
+                ]);
+            }
 
             $event->skills()->sync($request->skills);
             $event->unsdgs()->sync($request->unsdgs);
@@ -104,7 +114,7 @@ class EventController extends Controller
         $request->validate([
             "id" => "required",
             "user_id" => 'sometimes',
-            'program_model_name' => 'sometimes',
+            "activity_id" => "sometimes",
             "organization_id" => 'sometimes',
             "model_id" => 'sometimes',
             "event_type_id" => 'sometimes',
@@ -115,6 +125,7 @@ class EventController extends Controller
             "start_date" => "sometimes",
             "end_date" => "sometimes",
             "description" => "sometimes",
+            "budget_proposal" => "sometimes",
         ]);
 
         try {
@@ -134,9 +145,13 @@ class EventController extends Controller
                 'model_id',
                 'event_type_id',
                 'event_status_id',
+                'term',
+                'budget_proposal'
+            ]));
+
+            Activity::where('id', $request->activity_id)->update($request->only([
                 'name',
                 'address',
-                'term',
                 'start_date',
                 'end_date',
                 'description'
@@ -210,6 +225,7 @@ class EventController extends Controller
         $events = Event::whereIn('organization_id', $organizationIds)
             ->with([
                 'skills',
+                'activity',
                 'unsdgs',
                 'eventstatus',
                 'user',
@@ -410,4 +426,21 @@ class EventController extends Controller
             ], 500);
         }
     }
+    // public function getForms($id) {
+    //     try {
+    //         $event = Event::findOrFail($id);
+    //         $forms = $event->forms; // Collection of Form models
+
+    //         return response()->json([
+    //             'status' => 200,
+    //             'data' => $forms
+    //         ], 200);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' =>  $e->getCode(),
+    //             'message' => $e->getMessage(),
+    //         ],  $e->getCode());
+    //     }
+    // }
 }

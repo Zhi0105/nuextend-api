@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Event;
 use App\Models\Form;
 use Illuminate\Http\Request;
@@ -61,6 +62,7 @@ class FormController extends Controller
         ]);
 
         $event = Event::with('user')->find($validated['event_id']);
+        $activity = Activity::where('event_id', $validated['event_id'])->first();
 
         if (!$request->hasFile('file')) {
             return response()->json([
@@ -72,6 +74,7 @@ class FormController extends Controller
         $url = Storage::url($path); // public URL
 
         $form = Form::create([
+            'activities_id' => $activity->id,
             'name' => $validated['name'],
             'code' => $validated['code'],
             'file' => asset($url),
@@ -101,6 +104,24 @@ class FormController extends Controller
             'message' => 'Uploaded successfully',
             'form' => $form
         ], 201);
+    }
+    public function delete($id) {
+        $form = Form::findOrFail($id);
+
+        // Kunin yung file path mula sa database
+        $filePath = str_replace(asset('storage'), 'public', $form->file);
+
+        // Delete file sa storage kung existing
+        if (Storage::exists($filePath)) {
+            Storage::delete($filePath);
+        }
+
+        // Optional: delete yung record sa database
+        $form->delete();
+
+        return response()->json([
+            'message' => 'Removed successfully'
+        ], 200);
     }
     public function approve(Request $request) {
 

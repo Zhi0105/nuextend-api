@@ -46,5 +46,73 @@ class UserSeeder extends Seeder
             'contact' => '09999999999'
         ]);
 
+
+
+        User::create([
+            'role_id' => 9,
+            'firstname' => 'sba',
+            'middlename' => 'nu',
+            'lastname' => 'dean',
+            'email' => 'deansba@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('dean123'),
+            'contact' => '09999999999'
+        ]);
+
+        User::create([
+            'role_id' => 9,
+            'firstname' => 'seas',
+            'middlename' => 'nu',
+            'lastname' => 'dean',
+            'email' => 'deanseas@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('dean123'),
+            'contact' => '09999999999'
+        ]);
+
+        User::create([
+            'role_id' => 9,
+            'firstname' => 'set',
+            'middlename' => 'nu',
+            'lastname' => 'dean',
+            'email' => 'deanset@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('dean123'),
+            'contact' => '09999999999'
+        ]);
+
+        User::create([
+            'role_id' => 9,
+            'firstname' => 'sa',
+            'middlename' => 'nu',
+            'lastname' => 'dean',
+            'email' => 'deansa@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('dean123'),
+            'contact' => '09999999999'
+        ]);
+
+        User::create([
+            'role_id' => 9,
+            'firstname' => 'sthm',
+            'middlename' => 'nu',
+            'lastname' => 'dean',
+            'email' => 'deansthm@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('dean123'),
+            'contact' => '09999999999'
+        ]);
+
+        User::create([
+            'role_id' => 9,
+            'firstname' => 'shs',
+            'middlename' => 'nu',
+            'lastname' => 'dean',
+            'email' => 'deanshs@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('dean123'),
+            'contact' => '09999999999'
+        ]);
+
     }
 }

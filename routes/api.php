@@ -67,6 +67,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/form/{id}', [FormController::class, 'index']);
             Route::get('/form/program/{model_id}', [FormController::class, 'getProgramForm']);
             Route::post('/forms', [FormController::class, 'store']);
+            Route::delete('/forms/{id}', [FormController::class, 'delete']);
             Route::post('/form/approve', [FormController::class, 'approve']);
             Route::post('/form/reject', [FormController::class, 'reject']);
             Route::post('/form/attachment', [FormController::class, 'attachToEvent']);

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id(); // Primary key
 
             $table->unsignedBigInteger('event_id'); // Foreign key
+
             // Foreign key constraint
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->string('name');

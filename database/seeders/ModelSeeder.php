@@ -13,8 +13,9 @@ class ModelSeeder extends Seeder
      */
     public function run(): void
     {
-        Moddel::create([ 'name' => 'out reach project' ]);
-        Moddel::create([ 'name' => 'project' ]);
-        Moddel::create([ 'name' => 'program' ]);
+        Moddel::create([ 'name' => 'Outreach Project' ]);
+        Moddel::create([ 'name' => 'Project' ]);
+        Moddel::create([ 'name' => 'Program' ]);
     }
 }
+
