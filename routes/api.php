@@ -10,9 +10,12 @@ use App\Http\Controllers\EventTypeController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\OutreachProposalController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\ProgramProposalController;
+use App\Http\Controllers\ProjectProposalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\TargetgroupController;
@@ -140,9 +143,21 @@ Route::prefix('v1')->group(function () {
             Route::post('/participant/update', [ParticipantController::class, 'update']);
             Route::post('/participant/delete', [ParticipantController::class, 'delete']);
             Route::post('/participant/attendance', [ParticipantController::class, 'attendance']);
-
-
         // PARTICIPANT END
+
+        // PROPOSALS REQUEST
+            Route::get('outreach/proposal', [OutreachProposalController::class, 'index']);
+            Route::post('outreach/proposal/create', [OutreachProposalController::class, 'create']);
+            Route::post('outreach/proposal/{id}', [OutreachProposalController::class, 'update']);
+
+            Route::get('project/proposal', [ProjectProposalController::class, 'index']);
+            Route::post('project/proposal/create', [ProjectProposalController::class, 'create']);
+            Route::post('project/proposal/{id}', [ProjectProposalController::class, 'update']);
+
+            Route::get('program/proposal', [ProgramProposalController::class, 'index']);
+            Route::post('program/proposal/create', [ProgramProposalController::class, 'create']);
+            Route::post('program/proposal/{id}', [ProgramProposalController::class, 'update']);
+        //
 
     });
 
