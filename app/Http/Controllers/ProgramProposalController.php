@@ -16,6 +16,7 @@ class ProgramProposalController extends Controller
                 'ProgramComponentProjects',
                 'ProgramProjects',
                 'ProgramActivityPlans',
+                'ProgramProjects.ProgramProjectTeamMembers'
             )->get();
 
             return response()->json([
@@ -71,10 +72,10 @@ class ProgramProposalController extends Controller
 
             // activityPlans: array of objects
             'activityPlans'                => 'sometimes|array',
-            'activityPlans.*.activity'     => 'sometimes|string|max:255',
-            'activityPlans.*.outputs'      => 'sometimes|string',
-            'activityPlans.*.timeline'     => 'sometimes|string|max:255',
-            'activityPlans.*.personnel'    => 'sometimes|string',
+            'activityPlans.*.activity'     => 'sometimes',
+            'activityPlans.*.outputs'      => 'sometimes',
+            'activityPlans.*.timeline'     => 'sometimes',
+            'activityPlans.*.personnel'    => 'sometimes',
         ]);
 
         $proposal = DB::transaction(function () use ($validated) {
@@ -166,9 +167,9 @@ class ProgramProposalController extends Controller
             ]),
         ], 201);
     }
-    public function update(Request $request, $id) {
-        $proposal = ProgramProposal::findOrFail($id);
-
+    public function update(Request $request, $id)
+    {
+        // 1) Validate (pareho ng fields mo; dinagdagan ko ng *_delete at flexible team members / agencies)
         $validated = $request->validate([
             // parent fields
             'title'               => 'sometimes|string|max:255',
@@ -183,11 +184,18 @@ class ProgramProposalController extends Controller
             'mobileNumber'        => 'sometimes|string|max:50',
             'email'               => 'sometimes|email|max:255',
 
-            // arrays of strings
-            'programTeamMembers'   => 'sometimes|array',
-            'programTeamMembers.*' => 'string|max:255',
-            'cooperatingAgencies'   => 'sometimes|array',
-            'cooperatingAgencies.*' => 'string|max:255',
+            // arrays of strings OR objects
+            'programTeamMembers'               => 'sometimes|array',
+            'programTeamMembers.*'             => 'nullable',
+            'programTeamMembers.*.id'          => 'sometimes|integer|exists:program_team_members,id',
+            'programTeamMembers.*.name'        => 'sometimes|string|max:255',
+            'programTeamMembers.*._delete'     => 'sometimes|boolean',
+
+            'cooperatingAgencies'              => 'sometimes|array',
+            'cooperatingAgencies.*'            => 'nullable',
+            'cooperatingAgencies.*.id'         => 'sometimes|integer|exists:program_cooperating_agencies,id',
+            'cooperatingAgencies.*.name'       => 'sometimes|string|max:255',
+            'cooperatingAgencies.*._delete'    => 'sometimes|boolean',
 
             // componentProjects
             'componentProjects'                             => 'sometimes|array',
@@ -197,14 +205,16 @@ class ProgramProposalController extends Controller
             'componentProjects.*.budget'                    => 'sometimes',
             'componentProjects.*._delete'                   => 'sometimes|boolean',
 
-            // projects
+            // projects (+ nested teamMembers)
             'projects'                          => 'sometimes|array',
             'projects.*.id'                     => 'sometimes|integer|exists:program_projects,id',
             'projects.*.projectTitle'           => 'sometimes|string|max:255',
             'projects.*.teamLeader'             => 'sometimes|string|max:255',
             'projects.*.objectives'             => 'sometimes|string',
             'projects.*._delete'                => 'sometimes|boolean',
+
             'projects.*.teamMembers'            => 'sometimes|array',
+            'projects.*.teamMembers.*'          => 'nullable',
             'projects.*.teamMembers.*.id'       => 'sometimes|integer|exists:program_project_team_members,id',
             'projects.*.teamMembers.*.name'     => 'sometimes|string|max:255',
             'projects.*.teamMembers.*._delete'  => 'sometimes|boolean',
@@ -219,31 +229,64 @@ class ProgramProposalController extends Controller
             'activityPlans.*._delete'       => 'sometimes|boolean',
         ]);
 
-        $proposal = DB::transaction(function () use ($proposal, $validated) {
-            // parent update
+        $proposal = DB::transaction(function () use ($validated, $id) {
+            $proposal = ProgramProposal::findOrFail($id);
+
+            // 2) Update parent (safe kung fillable ang mga keys)
             $proposal->update($validated);
 
-            // team members reset
+            // ---------- PROGRAM TEAM MEMBERS (accepts strings OR {id,name,_delete}) ----------
             if (array_key_exists('programTeamMembers', $validated)) {
-                $proposal->ProgramTeamMembers()->delete();
-                if (!empty($validated['programTeamMembers'])) {
-                    $proposal->ProgramTeamMembers()->createMany(
-                        collect($validated['programTeamMembers'])->map(fn($n)=>['name'=>$n])->all()
-                    );
+                $keepIds = [];
+                foreach ($validated['programTeamMembers'] as $row) {
+                    // normalize: allow plain string item
+                    if (is_string($row)) {
+                        $row = ['name' => $row];
+                    }
+                    if (!empty($row['_delete']) && !empty($row['id'])) {
+                        $proposal->ProgramTeamMembers()->whereKey($row['id'])->delete();
+                        continue;
+                    }
+
+                    $payload = ['name' => $row['name'] ?? null];
+
+                    if (!empty($row['id'])) {
+                        $proposal->ProgramTeamMembers()->whereKey($row['id'])->update($payload);
+                        $keepIds[] = $row['id'];
+                    } else {
+                        $new = $proposal->ProgramTeamMembers()->create($payload);
+                        $keepIds[] = $new->id;
+                    }
                 }
+                $proposal->ProgramTeamMembers()->whereNotIn('id', $keepIds ?: [0])->delete();
             }
 
-            // cooperating agencies reset
+            // ---------- COOPERATING AGENCIES (also strings OR objects) ----------
             if (array_key_exists('cooperatingAgencies', $validated)) {
-                $proposal->ProgramCooperatingAgencies()->delete();
-                if (!empty($validated['cooperatingAgencies'])) {
-                    $proposal->ProgramCooperatingAgencies()->createMany(
-                        collect($validated['cooperatingAgencies'])->map(fn($n)=>['name'=>$n])->all()
-                    );
+                $keepIds = [];
+                foreach ($validated['cooperatingAgencies'] as $row) {
+                    if (is_string($row)) {
+                        $row = ['name' => $row];
+                    }
+                    if (!empty($row['_delete']) && !empty($row['id'])) {
+                        $proposal->ProgramCooperatingAgencies()->whereKey($row['id'])->delete();
+                        continue;
+                    }
+
+                    $payload = ['name' => $row['name'] ?? null];
+
+                    if (!empty($row['id'])) {
+                        $proposal->ProgramCooperatingAgencies()->whereKey($row['id'])->update($payload);
+                        $keepIds[] = $row['id'];
+                    } else {
+                        $new = $proposal->ProgramCooperatingAgencies()->create($payload);
+                        $keepIds[] = $new->id;
+                    }
                 }
+                $proposal->ProgramCooperatingAgencies()->whereNotIn('id', $keepIds ?: [0])->delete();
             }
 
-            // componentProjects upsert
+            // ---------- COMPONENT PROJECTS ----------
             if (array_key_exists('componentProjects', $validated)) {
                 $keepIds = [];
                 foreach ($validated['componentProjects'] as $cp) {
@@ -266,16 +309,16 @@ class ProgramProposalController extends Controller
                         $keepIds[] = $new->id;
                     }
                 }
-
                 $proposal->ProgramComponentProjects()->whereNotIn('id', $keepIds ?: [0])->delete();
             }
 
-            // projects upsert with nested teamMembers
+            // ---------- PROJECTS (+ nested TEAM MEMBERS) ----------
             if (array_key_exists('projects', $validated)) {
                 $keepProjectIds = [];
 
                 foreach ($validated['projects'] as $proj) {
                     if (!empty($proj['_delete']) && !empty($proj['id'])) {
+                        // delete project + its members
                         $proposal->ProgramProjects()->whereKey($proj['id'])->each(function ($p) {
                             $p->ProgramProjectTeamMembers()->delete();
                             $p->delete();
@@ -298,25 +341,43 @@ class ProgramProposalController extends Controller
 
                     $keepProjectIds[] = $projModel->id;
 
+                    // nested team members: accept strings OR {id,name,_delete}; do full prune style
                     if (array_key_exists('teamMembers', $proj)) {
-                        $projModel->ProgramProjectTeamMembers()->delete();
-                        $members = collect($proj['teamMembers'])->filter(fn($m) => empty($m['_delete']))
-                            ->map(fn($m) => is_string($m) ? ['name'=>$m] : ['name'=>$m['name'] ?? null])
-                            ->all();
+                        $keepMemberIds = [];
+                        foreach ($proj['teamMembers'] as $m) {
+                            if (is_string($m)) {
+                                $m = ['name' => $m];
+                            }
+                            if (!empty($m['_delete']) && !empty($m['id'])) {
+                                $projModel->ProgramProjectTeamMembers()->whereKey($m['id'])->delete();
+                                continue;
+                            }
 
-                        if ($members) {
-                            $projModel->ProgramProjectTeamMembers()->createMany($members);
+                            $payload = ['name' => $m['name'] ?? null];
+
+                            if (!empty($m['id'])) {
+                                $projModel->ProgramProjectTeamMembers()->whereKey($m['id'])->update($payload);
+                                $keepMemberIds[] = $m['id'];
+                            } else {
+                                $new = $projModel->ProgramProjectTeamMembers()->create($payload);
+                                $keepMemberIds[] = $new->id;
+                            }
                         }
+                        $projModel->ProgramProjectTeamMembers()->whereNotIn('id', $keepMemberIds ?: [0])->delete();
                     }
                 }
 
-                $proposal->ProgramProjects()->whereNotIn('id', $keepProjectIds ?: [0])
-                    ->get()->each(fn($p) => $p->ProgramProjectTeamMembers()->delete() || $p->delete());
+                // prune projects not present; cascade delete members
+                $proposal->ProgramProjects()->whereNotIn('id', $keepProjectIds ?: [0])->get()
+                    ->each(function ($p) {
+                        $p->ProgramProjectTeamMembers()->delete();
+                        $p->delete();
+                    });
             }
 
-            // activityPlans upsert
+            // ---------- ACTIVITY PLANS ----------
             if (array_key_exists('activityPlans', $validated)) {
-                $keepApIds = [];
+                $keepIds = [];
                 foreach ($validated['activityPlans'] as $ap) {
                     if (!empty($ap['_delete']) && !empty($ap['id'])) {
                         $proposal->ProgramActivityPlans()->whereKey($ap['id'])->delete();
@@ -332,19 +393,19 @@ class ProgramProposalController extends Controller
 
                     if (!empty($ap['id'])) {
                         $proposal->ProgramActivityPlans()->whereKey($ap['id'])->update($payload);
-                        $keepApIds[] = $ap['id'];
+                        $keepIds[] = $ap['id'];
                     } else {
                         $new = $proposal->ProgramActivityPlans()->create($payload);
-                        $keepApIds[] = $new->id;
+                        $keepIds[] = $new->id;
                     }
                 }
-
-                $proposal->ProgramActivityPlans()->whereNotIn('id', $keepApIds ?: [0])->delete();
+                $proposal->ProgramActivityPlans()->whereNotIn('id', $keepIds ?: [0])->delete();
             }
 
             return $proposal;
         });
 
+        // 3) Load relationships for client-side sync
         return response()->json([
             'message' => 'Program proposal updated',
             'data' => $proposal->load([

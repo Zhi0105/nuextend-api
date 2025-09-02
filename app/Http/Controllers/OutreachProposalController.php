@@ -153,11 +153,11 @@ class OutreachProposalController extends Controller
             // budget_sourcing
             'budget_sourcing' => 'array',
             'budget_sourcing.*.id' => 'sometimes|integer|exists:outreach_budget_sourcings,id',
-            'budget_sourcing.*.university' => 'sometimes|numeric',
-            'budget_sourcing.*.outreachGroup' => 'sometimes|numeric',
-            'budget_sourcing.*.service' => 'sometimes|numeric',
-            'budget_sourcing.*.other' => 'sometimes|numeric',
-            'budget_sourcing.*.total' => 'sometimes|numeric',
+            'budget_sourcing.*.university' => 'sometimes',
+            'budget_sourcing.*.outreachGroup' => 'sometimes',
+            'budget_sourcing.*.service' => 'sometimes',
+            'budget_sourcing.*.other' => 'sometimes',
+            'budget_sourcing.*.total' => 'sometimes',
         ]);
 
         try {
@@ -272,7 +272,7 @@ class OutreachProposalController extends Controller
 
                 return response()->json([
                     'status'  => 200,
-                    'message' => 'outreach proposal updated (synced) successfully',
+                    'message' => 'outreach proposal updated successfully',
                 ], 200);
             });
         } catch (\Exception $e) {

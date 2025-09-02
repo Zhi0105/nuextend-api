@@ -117,7 +117,7 @@ class ProjectProposalController extends Controller
             foreach ($request->project_objectives as $project_objective) {
                 ProjectObjective::create([
                     'project_proposals_id' => $project_proposal->id,
-                    'objectives' => $project_objective['objective'],
+                    'objective' => $project_objective['objective'],
                     'strategies' => $project_objective['strategies'],
                 ]);
             }
@@ -188,7 +188,7 @@ class ProjectProposalController extends Controller
             "collaborators"     => 'sometimes',
             "participants"      => 'sometimes',
             "partners"          => 'sometimes',
-            "implementationDate"=> 'sometimes|date',
+            "implementationDate"=> 'sometimes',
             "durationHours"     => 'sometimes|numeric',
             "area"              => 'sometimes',
             "budgetRequirement" => 'sometimes|numeric',
@@ -228,7 +228,7 @@ class ProjectProposalController extends Controller
             // project_work_plans
             'project_work_plans'                     => 'sometimes|array',
             'project_work_plans.*.id'                => 'sometimes|integer|exists:project_work_plans,id',
-            'project_work_plans.*.phaseDate'         => 'sometimes|date',
+            'project_work_plans.*.phaseDate'         => 'sometimes',
             'project_work_plans.*.activities'        => 'sometimes',
             'project_work_plans.*.targets'           => 'sometimes',
             'project_work_plans.*.indicators'        => 'sometimes',
@@ -276,7 +276,7 @@ class ProjectProposalController extends Controller
                     $data = [
                         'project_proposals_id' => $proposal->id,
                         // Note: your create() uses 'objectives' column fed by 'objective' key
-                        'objectives'           => $row['objective']  ?? null,
+                        'objective'           => $row['objective']  ?? null,
                         'strategies'           => $row['strategies'] ?? null,
                     ];
 
@@ -445,7 +445,7 @@ class ProjectProposalController extends Controller
 
                 return response()->json([
                     'status'  => 200,
-                    'message' => 'project proposal updated (synced) successfully',
+                    'message' => 'project proposal updated  successfully',
                 ], 200);
             });
         } catch (\Exception $e) {
