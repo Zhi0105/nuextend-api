@@ -27,7 +27,8 @@ class EventController extends Controller
                 'unsdgs',
                 'participants.user',
                 'participants.attendance',
-                'participants.event', 'targetgroup'])->get();
+                'participants.event'
+            ])->get();
 
             return response()->json([
                 'status' => 200,
@@ -48,7 +49,7 @@ class EventController extends Controller
             'model_id' => 'required',
             "event_type_id" => 'required',
             "event_status_id" => 'sometimes',
-            "target_group_id" => 'sometimes',
+            "target_group" => 'sometimes',
             "term" => "required|string",
             "budget_proposal" => "sometimes",
             'skills' => 'array',
@@ -66,20 +67,13 @@ class EventController extends Controller
 
         try {
 
-            if ($request->target_group_name) {
-                $targetGroup = Targetgroup::create([
-                    'name' => $request->target_group_name,
-                    'organization_id' => $request->organization_id
-                ]);
-            }
-
             $event = Event::create([
                 'user_id' => $request->user_id,
                 'organization_id' => $request->organization_id,
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
                 'event_status_id' => 1,
-                'target_group_id' => $targetGroup->id ?? $request->target_group_id,
+                'target_group' => $request->target_group,
                 'term' => $request->term,
                 'budget_proposal' => $request->budget_proposal
             ]);
@@ -119,6 +113,7 @@ class EventController extends Controller
             "model_id" => 'sometimes',
             "event_type_id" => 'sometimes',
             "event_status_id" => 'sometimes',
+            "target_group" => 'sometimes',
             "name" => "sometimes",
             "address" => "sometimes",
             "term" => "sometimes",
@@ -145,6 +140,7 @@ class EventController extends Controller
                 'model_id',
                 'event_type_id',
                 'event_status_id',
+                'target_group',
                 'term',
                 'budget_proposal'
             ]));
@@ -235,7 +231,6 @@ class EventController extends Controller
                 'participants.user',
                 'participants.attendance',
                 'participants.event',
-                'targetgroup'
             ])
             ->get();
 

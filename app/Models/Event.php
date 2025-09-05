@@ -17,7 +17,7 @@ class Event extends Model
         'model_id',
         'event_type_id',
         'event_status_id',
-        'target_group_id',
+        'target_group',
         'term',
         'budget_proposal',
         'is_posted',
@@ -58,9 +58,9 @@ class Event extends Model
     public function forms() {
         return $this->belongsToMany(Form::class, 'event_form')->withTimestamps();
     }
-    public function targetgroup() {
-        return $this->belongsTo(Targetgroup::class, 'target_group_id');
-    }
+    // public function targetgroup() {
+    //     return $this->belongsTo(Targetgroup::class, 'target_group_id');
+    // }
     public function activity() {
         return $this->hasMany(Activity::class, 'event_id');
     }
