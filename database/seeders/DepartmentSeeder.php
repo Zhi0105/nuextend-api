@@ -13,10 +13,11 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
+        Department::create([ 'name' => 'School of Business and Accountancy' ]);
+        Department::create([ 'name' => 'School of Education, Arts and Sciences' ]);
+        Department::create([ 'name' => 'School of Tourism and Hospitality' ]);
+        Department::create([ 'name' => 'School of Architecture' ]);
+        Department::create([ 'name' => 'School of Engineering and Technology' ]);
         Department::create([ 'name' => 'Senior High School' ]);
-        Department::create([ 'name' => 'Engineering and Technology' ]);
-        Department::create([ 'name' => 'Education, Arts and Sciences' ]);
-        Department::create([ 'name' => 'Computing and Information Technologies' ]);
-        Department::create([ 'name' => 'Business and Accountancy programs' ]);
     }
 }

@@ -46,10 +46,9 @@ class UserSeeder extends Seeder
             'contact' => '09999999999'
         ]);
 
-
-
         User::create([
             'role_id' => 9,
+            'department_id' => 1,
             'firstname' => 'sba',
             'middlename' => 'nu',
             'lastname' => 'dean',
@@ -61,6 +60,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
+            'department_id' => 2,
             'firstname' => 'seas',
             'middlename' => 'nu',
             'lastname' => 'dean',
@@ -72,6 +72,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
+            'department_id' => 5,
             'firstname' => 'set',
             'middlename' => 'nu',
             'lastname' => 'dean',
@@ -83,6 +84,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
+            'department_id' => 4,
             'firstname' => 'sa',
             'middlename' => 'nu',
             'lastname' => 'dean',
@@ -94,6 +96,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
+            'department_id' => 3,
             'firstname' => 'sthm',
             'middlename' => 'nu',
             'lastname' => 'dean',
@@ -105,6 +108,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
+            'department_id' => 6,
             'firstname' => 'shs',
             'middlename' => 'nu',
             'lastname' => 'dean',
