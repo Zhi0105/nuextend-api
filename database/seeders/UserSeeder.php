@@ -72,7 +72,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
-            'department_id' => 5,
+            'department_id' => 3,
             'firstname' => 'set',
             'middlename' => 'nu',
             'lastname' => 'dean',
@@ -96,7 +96,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 9,
-            'department_id' => 3,
+            'department_id' => 5,
             'firstname' => 'sthm',
             'middlename' => 'nu',
             'lastname' => 'dean',
