@@ -64,4 +64,7 @@ class Event extends Model
     public function activity() {
         return $this->hasMany(Activity::class, 'event_id');
     }
+    public function progress_report() {
+        return $this->hasMany(ProgressReport::class, 'event_id');
+    }
 }

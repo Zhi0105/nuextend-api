@@ -15,6 +15,7 @@ use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ProgramProposalController;
+use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\ProjectProposalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SkillController;
@@ -75,6 +76,12 @@ Route::prefix('v1')->group(function () {
             Route::post('/form/reject', [FormController::class, 'reject']);
             Route::post('/form/attachment', [FormController::class, 'attachToEvent']);
         // FORM UPLOADING END
+
+        // PROGRESS REPORT UPLOAD
+            Route::get('/progress-report/{id}', [ProgressReportController::class, 'index']);
+            Route::post('/progress-report', [ProgressReportController::class, 'store']);
+            Route::post('/progress-report/remove', [ProgressReportController::class, 'delete']);
+        // PROGRESS REPORT UPLOAD
 
 
         // USER START

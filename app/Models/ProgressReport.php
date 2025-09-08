@@ -5,23 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Activity extends Model
+class ProgressReport extends Model
 {
     use HasFactory;
-    protected $table = 'activities';
+
+    protected $table = 'progress_reports';
     protected $fillable = [
         'event_id',
+        'activity_id',
         'name',
-        'address',
-        'start_date',
-        'end_date',
-        'description'
+        'file',
+        'date',
+        'budget',
     ];
 
     public function event() {
         return $this->belongsTo(Event::class, 'event_id');
     }
-    public function progress_report() {
-        return $this->hasMany(ProgressReport::class, 'activity_id');
+
+    public function activity() {
+        return $this->belongsTo(Activity::class, 'activity_id');
     }
 }
