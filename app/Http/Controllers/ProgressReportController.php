@@ -118,4 +118,89 @@ class ProgressReportController extends Controller
 
         return response()->json(['message' => 'Removed successfully'], 200);
     }
+
+    public function approve(Request $request) {
+
+        $request->validate([
+            "id" => 'required|integer',
+            "role_id" => 'required|integer',
+            "commex_remarks" => 'sometimes',
+            "asd_remarks" => 'sometimes'
+        ]);
+
+            try {
+            $report = ProgressReport::find($request->id);
+
+            if (!$report) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Report not found',
+                ], 404);
+            }
+
+            $userId = auth()->id(); // current logged-in user
+
+            $roleUpdateMap = [
+                1  => ['is_commex' => true, 'commex_remarks' => $request->input('commex_remarks'), 'commex_approve_date' => now()],
+                10 => ['is_asd' => true, 'asd_remarks' => $request->input('asd_remarks'),  'asd_approve_date' => now()],
+            ];
+
+            if (isset($roleUpdateMap[$request->role_id])) {
+                $report->update($roleUpdateMap[$request->role_id]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Approved Successful',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+    }
+    public function reject(Request $request) {
+        $request->validate([
+            "id" => 'required|integer',
+            "role_id" => 'required|integer',
+            "commex_remarks" => 'sometimes',
+            "asd_remarks" => 'sometimes'
+        ]);
+
+        try {
+            $report = ProgressReport::find($request->id);
+
+            if (!$report) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'report not found',
+                ], 404);
+            }
+
+            $roleUpdateMap = [
+                1  => ['is_commex' => false, 'commex_remarks' => $request->input('commex_remarks')],
+                10 => ['is_asd' => false, 'asd_remarks' => $request->input('asd_remarks')],
+            ];
+
+            $updateData = $roleUpdateMap[$request->role_id] ?? null;
+
+            if ($updateData) {
+                $report->update($updateData);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Report Rejected',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

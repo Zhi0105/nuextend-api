@@ -17,6 +17,12 @@ class ProgressReport extends Model
         'file',
         'date',
         'budget',
+        'is_commex',
+        'is_asd',
+        'commex_remarks',
+        'asd_remarks',
+        'commex_approve_date',
+        'asd_approve_date'
     ];
 
     public function event() {

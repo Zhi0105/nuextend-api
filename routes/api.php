@@ -83,6 +83,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/progress-report/remove', [ProgressReportController::class, 'delete']);
         // PROGRESS REPORT UPLOAD
 
+        // PROGRESS REPORT APPROVAL
+            Route::post('/progress-report/approve', [ProgressReportController::class, 'approve']);
+            Route::post('/progress-report/reject', [ProgressReportController::class, 'reject']);
+        // PROGRESS REPORT APPROVAL
 
         // USER START
             Route::get('/user/all', [AuthController::class, 'index']);
