@@ -14,7 +14,7 @@ class EventController extends Controller
         try {
             $events = Event::with('skills')->with([
                 'forms',
-                'activity',
+                'activity.progress_report',
                 'unsdgs',
                 'eventstatus',
                 'user',
@@ -221,7 +221,7 @@ class EventController extends Controller
         $events = Event::whereIn('organization_id', $organizationIds)
             ->with([
                 'skills',
-                'activity',
+                'activity.progress_report',
                 'unsdgs',
                 'eventstatus',
                 'user',
