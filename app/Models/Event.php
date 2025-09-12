@@ -14,6 +14,7 @@ class Event extends Model
     protected $fillable = [
         'user_id',
         'organization_id',
+        'name',
         'model_id',
         'event_type_id',
         'event_status_id',
@@ -61,8 +62,13 @@ class Event extends Model
     // public function targetgroup() {
     //     return $this->belongsTo(Targetgroup::class, 'target_group_id');
     // }
-    public function activity() {
+    public function activities() {
         return $this->hasMany(Activity::class, 'event_id');
+    }
+
+// Optional BC alias (so old code using ->activity() still works)
+    public function activity() {
+        return $this->activities();
     }
     public function progress_report() {
         return $this->hasMany(ProgressReport::class, 'event_id');

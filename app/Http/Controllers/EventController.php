@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Targetgroup;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -49,6 +50,7 @@ class EventController extends Controller
             'model_id' => 'required',
             "event_type_id" => 'required',
             "event_status_id" => 'sometimes',
+            "name" => 'sometimes',
             "target_group" => 'sometimes',
             "term" => "required|string",
             "budget_proposal" => "sometimes",
@@ -73,6 +75,7 @@ class EventController extends Controller
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
                 'event_status_id' => 1,
+                'name' => $request->name,
                 'target_group' => $request->target_group,
                 'term' => $request->term,
                 'budget_proposal' => $request->budget_proposal
@@ -105,74 +108,128 @@ class EventController extends Controller
 
     }
     public function update(Request $request) {
-        $request->validate([
-            "id" => "required",
-            "user_id" => 'sometimes',
-            "activity_id" => "sometimes",
-            "organization_id" => 'sometimes',
-            "model_id" => 'sometimes',
-            "event_type_id" => 'sometimes',
-            "event_status_id" => 'sometimes',
-            "target_group" => 'sometimes',
-            "name" => "sometimes",
-            "address" => "sometimes",
-            "term" => "sometimes",
-            "start_date" => "sometimes",
-            "end_date" => "sometimes",
-            "description" => "sometimes",
-            "budget_proposal" => "sometimes",
+        // Validate first
+        $validated = $request->validate([
+            "id" => "required|integer|exists:events,id",
+
+            // Event fields
+            "user_id" => "sometimes|integer|exists:users,id",
+            "organization_id" => "sometimes|nullable|integer|exists:organizations,id",
+            "model_id" => "sometimes|integer|exists:models,id",
+            "event_type_id" => "sometimes|integer|exists:event_types,id",
+            "event_status_id" => "sometimes|integer|exists:event_statuses,id",
+            "name" => "sometimes|nullable|string",
+            "target_group" => "sometimes|nullable|string",
+            "term" => "sometimes|string",
+            "budget_proposal" => "sometimes|nullable",
+
+            // Relations
+            "skills" => "sometimes|array",
+            "skills.*" => "integer|exists:skills,id",
+            "unsdgs" => "sometimes|array",
+            "unsdgs.*" => "integer|exists:unsdgs,id",
+
+            // Nested activities (full upsert set)
+            "activities" => "sometimes|array",
+            "activities.*.id" => "sometimes|integer|exists:activities,id", // present = update, absent = create
+            "activities.*.name" => "required_with:activities|string",
+            "activities.*.description" => "required_with:activities|string",
+            "activities.*.address" => "required_with:activities|string",
+            "activities.*.start_date" => "required_with:activities|string",
+            "activities.*.end_date" => "required_with:activities|string",
         ]);
 
         try {
-            $event = Event::find($request->id);
+            return DB::transaction(function () use ($validated) {
 
-            if(!$event) {
+                $event = Event::find($validated['id']);
+                if (!$event) {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'No event found',
+                    ], 404);
+                }
+
+                // Update event core fields (only those present)
+                $event->update(collect($validated)->only([
+                    'user_id',
+                    'organization_id',
+                    'model_id',
+                    'event_type_id',
+                    'event_status_id',
+                    'name',
+                    'target_group',
+                    'term',
+                    'budget_proposal',
+                ])->toArray());
+
+                // Upsert activities if provided
+                $keptActivityIds = [];
+
+                if (isset($validated['activities'])) {
+                    foreach ($validated['activities'] as $activityData) {
+
+                        // Attach event_id always
+                        $activityPayload = [
+                            'event_id' => $event->id,
+                            'name' => $activityData['name'],
+                            'address' => $activityData['address'],
+                            'start_date' => $activityData['start_date'],
+                            'end_date' => $activityData['end_date'],
+                            'description' => $activityData['description'],
+                        ];
+
+                        if (!empty($activityData['id'])) {
+                            // Update existing (ensure it belongs to this event)
+                            $activity = Activity::where('id', $activityData['id'])
+                                ->where('event_id', $event->id)
+                                ->firstOrFail();
+
+                            $activity->update($activityPayload);
+                            $keptActivityIds[] = $activity->id;
+                        } else {
+                            // Create new
+                            $new = Activity::create($activityPayload);
+                            $keptActivityIds[] = $new->id;
+                        }
+                    }
+
+                    // Delete activities removed from payload
+                    $event->activities()
+                        ->whereNotIn('id', $keptActivityIds)
+                        ->delete();
+                }
+
+                // Sync pivot relations if provided (leave as-is if not sent)
+                if (array_key_exists('skills', $validated)) {
+                    $event->skills()->sync($validated['skills'] ?? []);
+                }
+                if (array_key_exists('unsdgs', $validated)) {
+                    $event->unsdgs()->sync($validated['unsdgs'] ?? []);
+                }
+
+                // Optionally enforce a status reset similar to your old code
+                // If you always want to reset to Draft/Pending (1) on any update:
+                // $event->update(['event_status_id' => 1]);
+
+                // Return the fresh model with relations
+                $event->load(['activities', 'skills', 'unsdgs']);
+
                 return response()->json([
-                    'status' => 404,
-                    'message' => "No event found"
-                ], 404);
-            }
-
-            $event->update($request->only([
-                'user_id',
-                'program_model_name',
-                'organization_id',
-                'model_id',
-                'event_type_id',
-                'event_status_id',
-                'target_group',
-                'term',
-                'budget_proposal'
-            ]));
-
-            Activity::where('id', $request->activity_id)->update($request->only([
-                'name',
-                'address',
-                'start_date',
-                'end_date',
-                'description'
-            ]));
-
-            $event->skills()->sync($request->skills);
-            $event->unsdgs()->sync($request->unsdgs);
-
-            Event::where('id', $request->id)->update([
-                'event_status_id' => 1
-            ]);
-
-            return response()->json([
-                'status' => 200,
-                "message" => "Event successfully updated"
-            ], 200);
-
-
+                    'status' => 200,
+                    'message' => 'Event successfully updated',
+                    'data' => $event
+                ], 200);
+            });
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            // Will be auto-handled by Laravel; included here if you want custom response
+            throw $ve;
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
-
     }
     public function delete(Request $request) {
         $request->validate([
