@@ -15,9 +15,9 @@ class UserSeeder extends Seeder
     {
         User::create([
             'role_id' => 1,
-            'firstname' => 'admin',
-            'middlename' => 'admin',
-            'lastname' => 'admin',
+            'firstname' => 'comex',
+            'middlename' => 'comex',
+            'lastname' => 'comex',
             'email' => 'admin@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('admin123'),
