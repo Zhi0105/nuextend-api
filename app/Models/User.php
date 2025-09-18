@@ -95,4 +95,47 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification() {
         $this->notify(new CustomVerifyEmail());
     }
+
+
+    // FORM1
+    public function form1ProposalsCommexApproved() {
+        return $this->hasMany(Form1ProgramProposal::class, 'commex_approved_by');
+    }
+    public function form1ProposalsDeanApproved() {
+        return $this->hasMany(Form1ProgramProposal::class, 'dean_approved_by');
+    }
+    public function form1ProposalsAsdApproved() {
+        return $this->hasMany(Form1ProgramProposal::class, 'asd_approved_by');
+    }
+    public function form1ProposalsAdApproved() {
+        return $this->hasMany(Form1ProgramProposal::class, 'ad_approved_by');
+    }
+
+    // FORM2
+    public function form2ProposalsCommexApproved() {
+        return $this->hasMany(Form2ProjectProposal::class, 'commex_approved_by');
+    }
+    public function form2ProposalsDeanApproved() {
+        return $this->hasMany(Form2ProjectProposal::class, 'dean_approved_by');
+    }
+    public function form2ProposalsAsdApproved() {
+        return $this->hasMany(Form2ProjectProposal::class, 'asd_approved_by');
+    }
+    public function form2ProposalsAdApproved() {
+        return $this->hasMany(Form2ProjectProposal::class, 'ad_approved_by');
+    }
+
+    // FORM3
+    public function form3ProposalsCommexApproved() {
+        return $this->hasMany(Form3OutreachProposal::class, 'commex_approved_by');
+    }
+    public function form3ProposalsDeanApproved() {
+        return $this->hasMany(Form3OutreachProposal::class, 'dean_approved_by');
+    }
+    public function form3ProposalsAsdApproved() {
+        return $this->hasMany(Form3OutreachProposal::class, 'asd_approved_by');
+    }
+    public function form3ProposalsAdApproved() {
+        return $this->hasMany(Form3OutreachProposal::class, 'ad_approved_by');
+    }
 }

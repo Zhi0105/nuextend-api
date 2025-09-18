@@ -18,4 +18,8 @@ class EventType extends Model
     public function ProjectProposals() {
         return $this->hasMany(ProjectProposal::class, 'event_type_id');
     }
+    public function ProjectProposals2() {
+        return $this->hasMany(Form2ProjectProposal::class, 'event_type_id');
+    }
+
 }
