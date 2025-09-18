@@ -7,6 +7,9 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventMemberController;
 use App\Http\Controllers\EventStatusController;
 use App\Http\Controllers\EventTypeController;
+use App\Http\Controllers\Form1Controller;
+use App\Http\Controllers\Form2Controller;
+use App\Http\Controllers\Form3Controller;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\OrganizationController;
@@ -168,7 +171,23 @@ Route::prefix('v1')->group(function () {
             Route::get('program/proposal', [ProgramProposalController::class, 'index']);
             Route::post('program/proposal/create', [ProgramProposalController::class, 'create']);
             Route::post('program/proposal/{id}', [ProgramProposalController::class, 'update']);
-        //
+        // PROPOSALS REQUEST
+
+
+        // UPDATED FORM REQUEST
+            Route::get('form1/proposal', [Form1Controller::class, 'index']);
+            Route::post('form1/proposal/create', [Form1Controller::class, 'create']);
+            Route::post('form1/proposal/{id}', [Form1Controller::class, 'update']);
+
+            Route::get('form2/proposal', [Form2Controller::class, 'index']);
+            Route::post('form2/proposal/create', [Form2Controller::class, 'create']);
+            Route::post('form2/proposal/{id}', [Form2Controller::class, 'update']);
+
+            Route::get('form3/proposal', [Form3Controller::class, 'index']);
+            Route::post('form3/proposal/create', [Form3Controller::class, 'create']);
+            Route::post('form3/proposal/{id}', [Form3Controller::class, 'update']);
+
+        // UPDATED FORM REQUEST
 
     });
 
