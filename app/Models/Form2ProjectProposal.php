@@ -10,6 +10,7 @@ class Form2ProjectProposal extends Model
     use HasFactory;
     protected $table = 'form2_project_proposals';
     protected $fillable = [
+        'event_id',
         'event_type_id',
         'proponents',
         'collaborators',
@@ -26,6 +27,11 @@ class Form2ProjectProposal extends Model
     // If you’ll store a real date in implementationDate, you can cast:
     // protected $casts = ['implementationDate' => 'date'];
 
+
+
+    public function event() {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
     // Relationships
     public function eventType() {
         return $this->belongsTo(EventType::class, 'event_type_id');

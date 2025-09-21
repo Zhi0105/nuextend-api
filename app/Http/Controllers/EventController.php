@@ -29,7 +29,17 @@ class EventController extends Controller
                 'unsdgs',
                 'participants.user',
                 'participants.attendance',
-                'participants.event'
+                'participants.event',
+                'form1',
+                'form2',
+                'form3',
+                'form3.activityPlansBudgets',
+                'form3.detailedBudgets',
+                'form3.budgetSourcings',
+                'form3.commexApprover',
+                'form3.deanApprover',
+                'form3.asdApprover',
+                'form3.adApprover'
             ])->get();
 
             return response()->json([
@@ -291,6 +301,16 @@ class EventController extends Controller
                 'participants.user',
                 'participants.attendance',
                 'participants.event',
+                'form1',
+                'form2',
+                'form3',
+                'form3.activityPlansBudgets',
+                'form3.detailedBudgets',
+                'form3.budgetSourcings',
+                'form3.commexApprover',
+                'form3.deanApprover',
+                'form3.asdApprover',
+                'form3.adApprover'
             ])
             ->get();
 

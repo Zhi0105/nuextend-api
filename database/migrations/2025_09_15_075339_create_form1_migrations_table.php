@@ -14,6 +14,10 @@ return new class extends Migration
         // Parent table: form1_program_proposals
         Schema::create('form1_program_proposals', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('event_id'); // Foreign key
+
+            // Foreign key constraint
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->string('duration')->nullable();
             $table->text('background')->nullable();
             $table->text('overall_goal')->nullable();

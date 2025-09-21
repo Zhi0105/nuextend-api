@@ -40,6 +40,7 @@ class Form1Controller extends Controller
     public function create(Request $request) {
 
             $validated = $request->validate([
+            'event_id'            => 'sometimes',
             'duration'            => 'sometimes|string|max:255',
             'background'          => 'sometimes|string',
             'overall_goal'         => 'sometimes|string',
@@ -78,6 +79,7 @@ class Form1Controller extends Controller
         $proposal = DB::transaction(function () use ($validated) {
             // 1) Create parent
             $proposal = Form1ProgramProposal::create([
+                'event_id'            => $validated['event_id'] ?? null,
                 'duration'            => $validated['duration'] ?? null,
                 'background'          => $validated['background'] ?? null,
                 'overall_goal'         => $validated['overall_goal'] ?? null,

@@ -33,6 +33,7 @@ class Form3Controller extends Controller
     }
     public function create(Request $request) {
         $request->validate([
+            'event_id'  => 'sometimes',
             "description" => 'sometimes',
             'targetGroup' => 'sometimes',
             "startDate" => 'sometimes',
@@ -63,6 +64,7 @@ class Form3Controller extends Controller
         try {
 
             $outreach_proposal = Form3OutreachProposal::create([
+                'event_id'      => $request->event_id,
                 'description' => $request->description,
                 'targetGroup' => $request->targetGroup,
                 'startDate' => $request->startDate,

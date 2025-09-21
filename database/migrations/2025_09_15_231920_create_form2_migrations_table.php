@@ -14,9 +14,12 @@ return new class extends Migration
         // Main proposals table
         Schema::create('form2_project_proposals', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('event_id'); // Foreign key
             $table->unsignedBigInteger('event_type_id');
 
+
             // Short FK name to avoid MySQL 64-char limit
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->foreign('event_type_id', 'fk_f2pp_event_type')->references('id')->on('event_types')->onDelete('cascade');
             $table->string('proponents')->nullable();
             $table->string('collaborators')->nullable();

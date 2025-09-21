@@ -73,4 +73,16 @@ class Event extends Model
     public function progress_report() {
         return $this->hasMany(ProgressReport::class, 'event_id');
     }
+
+
+
+    public function form1() {
+        return $this->hasMany(Form1ProgramProposal::class, 'event_id');
+    }
+    public function form2() {
+        return $this->hasMany(Form2ProjectProposal::class, 'event_id');
+    }
+    public function form3() {
+        return $this->hasMany(Form3OutreachProposal::class, 'event_id');
+    }
 }

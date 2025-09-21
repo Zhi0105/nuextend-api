@@ -14,6 +14,10 @@ return new class extends Migration
         // Main proposals table
         Schema::create('form3_outreach_proposals', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('event_id'); // Foreign key
+
+            // Foreign key constraint
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->text('description')->nullable();
             $table->text('targetGroup')->nullable();
             $table->date('startDate')->nullable();

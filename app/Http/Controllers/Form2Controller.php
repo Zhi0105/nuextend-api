@@ -40,6 +40,7 @@ class Form2Controller extends Controller
     }
     public function create(Request $request) {
         $request->validate([
+            'event_id'  => 'sometimes',
             "event_type_id" => 'required',
             "proponents" => 'sometimes',
             "collaborators" => 'sometimes',
@@ -91,6 +92,7 @@ class Form2Controller extends Controller
 
         try {
             $project_proposal = Form2ProjectProposal::create([
+                'event_id'      => $request->event_id,
                 'event_type_id' => $request->event_type_id,
                 'proponents' => $request->proponents,
                 'collaborators' => $request->collaborators,

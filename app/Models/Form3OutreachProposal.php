@@ -10,11 +10,17 @@ class Form3OutreachProposal extends Model
     use HasFactory;
     protected $table = 'form3_outreach_proposals';
     protected $fillable = [
+        'event_id',
         'description',
         'targetGroup',
         'startDate',
         'endDate'
     ];
+
+    public function event() {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
 
     public function activityPlansBudgets() {
         return $this->hasMany(Form3OutreachActivityPlansBudget::class, 'form3_outreach_proposals_id');

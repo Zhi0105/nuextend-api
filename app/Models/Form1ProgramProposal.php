@@ -10,11 +10,17 @@ class Form1ProgramProposal extends Model
     use HasFactory;
     protected $table = 'form1_program_proposals';
     protected $fillable = [
+        'event_id',
         'duration',
         'background',
         'overall_goal',
         'scholarly_connection'
     ];
+
+
+    public function event() {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
 
         // Relationships
     public function teamMembers() {
