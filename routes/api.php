@@ -184,14 +184,14 @@ Route::prefix('v1')->group(function () {
             Route::get('form2/proposal', [Form2Controller::class, 'index']);
             Route::post('form2/proposal/create', [Form2Controller::class, 'create']);
             Route::post('form2/proposal/{id}', [Form2Controller::class, 'update']);
-            Route::post('/form2/approve', [Form1Controller::class, 'approve']);
-            Route::post('/form2/reject', [Form1Controller::class, 'reject']);
+            Route::post('/form2/approve', [Form2Controller::class, 'approve']);
+            Route::post('/form2/reject', [Form2Controller::class, 'reject']);
 
             Route::get('form3/proposal', [Form3Controller::class, 'index']);
             Route::post('form3/proposal/create', [Form3Controller::class, 'create']);
             Route::post('form3/proposal/{id}', [Form3Controller::class, 'update']);
-            Route::post('/form3/approve', [Form1Controller::class, 'approve']);
-            Route::post('/form3/reject', [Form1Controller::class, 'reject']);
+            Route::post('/form3/approve', [Form3Controller::class, 'approve']);
+            Route::post('/form3/reject', [Form3Controller::class, 'reject']);
         // UPDATED FORM REQUEST
 
     });

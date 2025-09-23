@@ -284,7 +284,7 @@ class Form3Controller extends Controller
             if (!$proposal) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Form not found',
+                    'message' => 'Form not founds',
                 ], 404);
             }
 
