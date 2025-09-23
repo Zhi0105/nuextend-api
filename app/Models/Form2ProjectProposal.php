@@ -21,7 +21,23 @@ class Form2ProjectProposal extends Model
         'budgetRequirement',
         'budgetRequested',
         'background',
-        'otherInfo'
+        'otherInfo',
+        'is_commex',
+        'is_dean',
+        'is_asd',
+        'is_ad',
+        'commex_remarks',
+        'dean_remarks',
+        'asd_remarks',
+        'ad_remarks',
+        'commex_approved_by',
+        'dean_approved_by',
+        'asd_approved_by',
+        'ad_approved_by',
+        'commex_approve_date',
+        'dean_approve_date',
+        'asd_approve_date',
+        'ad_approve_date'
     ];
 
     // If you’ll store a real date in implementationDate, you can cast:
