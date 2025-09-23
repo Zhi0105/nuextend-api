@@ -189,6 +189,15 @@ Route::prefix('v1')->group(function () {
 
         // UPDATED FORM REQUEST
 
+        // FORM 14 REQUEST
+            Route::get('form14/proposal', [\App\Http\Controllers\Form14Controller::class, 'index']);
+            Route::post('form14/proposal/create', [\App\Http\Controllers\Form14Controller::class, 'store']);
+            Route::get('form14/proposal/{id}', [\App\Http\Controllers\Form14Controller::class, 'show']);
+            Route::put('form14/proposal/{id}', [\App\Http\Controllers\Form14Controller::class, 'update']);
+            Route::delete('form14/proposal/{id}', [\App\Http\Controllers\Form14Controller::class, 'destroy']);
+            Route::get('form14/activity/{activities_id}', [\App\Http\Controllers\Form14Controller::class, 'getReportsByActivity']);
+            Route::patch('form14/{id}/status', [\App\Http\Controllers\Form14Controller::class, 'updateStatus']);
+            // FORM 14 REQUEST
     });
 
 });
