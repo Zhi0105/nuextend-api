@@ -42,7 +42,7 @@ return new class extends Migration
         Schema::create('form9_logic_models', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form9_id');
-            $table->foreignId('form9_id')->constrained('form9')->onDelete('cascade');
+            $table->foreign('form9_id')->references('id')->on('form9')->onDelete('cascade');
 
             $table->text('objectives')->nullable();
             $table->text('inputs')->nullable();

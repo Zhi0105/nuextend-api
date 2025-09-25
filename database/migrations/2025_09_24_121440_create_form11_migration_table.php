@@ -43,7 +43,7 @@ return new class extends Migration
         Schema::create('form11_travel_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form11_id');
-            $table->foreignId('form11_id')->constrained('form11')->onDelete('cascade');
+            $table->foreign('form11_id')->references('id')->on('form11')->onDelete('cascade');
 
             $table->date('date')->nullable();
             $table->string('from')->nullable();

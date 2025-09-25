@@ -45,7 +45,7 @@ return new class extends Migration
         Schema::create('form8_references', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form8_id');
-            $table->foreignId('form8_id')->constrained('form8')->onDelete('cascade');
+            $table->foreign('form8_id')->references('id')->on('form8')->onDelete('cascade');
             $table->text('reference'); // each reference (can be long text like citation)
             $table->timestamps();
         });

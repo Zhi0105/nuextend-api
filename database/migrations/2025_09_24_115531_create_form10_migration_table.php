@@ -42,7 +42,7 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('form10_id');
-            $table->foreignId('form10_id')->constrained('form10')->onDelete('cascade');
+            $table->foreign('form10_id')->references('id')->on('form10')->onDelete('cascade');
 
             $table->text('objectives')->nullable();
             $table->text('activities')->nullable();
