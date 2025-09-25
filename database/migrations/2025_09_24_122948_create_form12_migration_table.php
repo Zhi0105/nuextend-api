@@ -49,9 +49,9 @@ return new class extends Migration
         Schema::create('form12_attendees', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form12_id');
-            $table->foreignId('form12_id')->constrained('form12')->onDelete('cascade');
+            $table->foreign('form12_id')->references('id')->on('form12')->onDelete('cascade');
 
-            $table->string('full_name');
+            $table->string('full_name')->nullable();
             $table->string('designation')->nullable();
 
             // school & department reference
@@ -65,7 +65,7 @@ return new class extends Migration
         Schema::create('form12_new_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form12_id');
-            $table->foreignId('form12_id')->constrained('form12')->onDelete('cascade');
+            $table->foreign('form12_id')->references('id')->on('form12')->onDelete('cascade');
 
             $table->text('topic')->nullable();
             $table->text('discussion')->nullable();
