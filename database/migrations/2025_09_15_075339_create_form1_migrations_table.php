@@ -97,16 +97,17 @@ return new class extends Migration
             $table->timestamps();
         });
         // Budget summary under the program proposal
-        Schema::create('form1_budget_summary', function (Blueprint $table) {
+        Schema::create('form1_project_budget_summary', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('form1_program_proposals_id'); // Foreign key
+            $table->unsignedBigInteger('form1_projects_id'); // Foreign key
 
             // Foreign key constraint
-            $table->foreign('form1_program_proposals_id')->references('id')->on('form1_program_proposals')->onDelete('cascade');
+            $table->foreign('form1_projects_id')->references('id')->on('form1_projects')->onDelete('cascade');
             $table->string('activities')->nullable();
             $table->string('outputs')->nullable();
             $table->string('timeline')->nullable(); // M/D/Y input can be parsed to a date
             $table->string('personnel')->nullable();
+            $table->string('budget')->nullable();
             $table->timestamps();
         });
     }
