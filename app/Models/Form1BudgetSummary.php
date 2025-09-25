@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Form1BudgetSummary extends Model
 {
     use HasFactory;
-    protected $table = 'form1_budget_summary';
+    protected $table = 'form1_project_budget_summary';
     protected $fillable = [
     'form1_projects_id',
     'activities',

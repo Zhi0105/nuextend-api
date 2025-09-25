@@ -88,12 +88,14 @@ class Form1Controller extends Controller
 
             // 2) Proposal-level team members
             if (!empty($validated['programTeamMembers'])) {
-                $proposal->teamMembers()->createMany(
-                    collect($validated['programTeamMembers'])
-                        ->map(fn ($n) => ['name' => $n])
-                        ->all()
-                );
-            }
+                    $proposal->teamMembers()->createMany(
+                        collect($validated['programTeamMembers'])
+                            ->filter(fn ($n) => filled($n)) // <— drop "", null
+                            ->map(fn ($n) => ['name' => $n])
+                            ->values()
+                            ->all()
+                    );
+                }
 
             // 3) Cooperating agencies
             if (!empty($validated['cooperatingAgencies'])) {
@@ -129,23 +131,42 @@ class Form1Controller extends Controller
                     // project team members
                     if (!empty($proj['teamMembers']) && is_array($proj['teamMembers'])) {
                         $projModel->teamMembers()->createMany(
-                            collect($proj['teamMembers'])->map(fn ($n) => ['name' => $n])->all()
+                            collect($proj['teamMembers'])
+                                ->filter(fn ($n) => filled($n)) // <— drop "", null
+                                ->map(fn ($n) => ['name' => $n])
+                                ->values()
+                                ->all()
                         );
                     }
-
                     // project budget summaries (IMPORTANT: now under project)
                     if (!empty($proj['budgetSummaries']) && is_array($proj['budgetSummaries'])) {
-                        $rows = collect($proj['budgetSummaries'])->map(function ($bs) {
-                            return [
-                                'activities' => $bs['activities'] ?? null,
-                                'outputs'    => $bs['outputs'] ?? null,
-                                'timeline'   => $bs['timeline'] ?? null,
-                                'personnel'  => $bs['personnel'] ?? null,
-                                'budget'     => $bs['budget'] ?? null,
-                            ];
-                        })->all();
+                        $rows = collect($proj['budgetSummaries'])
+                            ->map(function ($bs) {
+                                // Optional: coerce date and budget
+                                $timeline = $bs['timeline'] ?? null;  // expecting 'YYYY-MM-DD' string already
+                                $budget   = $bs['budget'] ?? null;    // keep as nullable decimal/string
 
-                        $projModel->budgetSummaries()->createMany($rows);
+                                return [
+                                    'activities' => $bs['activities'] ?? null,
+                                    'outputs'    => $bs['outputs'] ?? null,
+                                    'timeline'   => $timeline,
+                                    'personnel'  => $bs['personnel'] ?? null,
+                                    'budget'     => $budget,
+                                ];
+                            })
+                            // drop rows that are entirely empty
+                            ->filter(fn ($r) =>
+                                filled($r['activities'])
+                                || filled($r['outputs'])
+                                || filled($r['timeline'])
+                                || filled($r['personnel'])
+                                || filled($r['budget'])
+                            )
+                            ->values();
+
+                        if ($rows->isNotEmpty()) {
+                            $projModel->budgetSummaries()->createMany($rows->all());
+                        }
                     }
                 }
             }
