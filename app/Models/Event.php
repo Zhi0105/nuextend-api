@@ -85,4 +85,7 @@ class Event extends Model
     public function form3() {
         return $this->hasMany(Form3OutreachProposal::class, 'event_id');
     }
+    public function form4() {
+        return $this->hasMany(Form4::class, 'event_id');
+    }
 }
