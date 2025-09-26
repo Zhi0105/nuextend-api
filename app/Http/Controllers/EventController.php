@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Event;
-use App\Models\Targetgroup;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +35,7 @@ class EventController extends Controller
                 'form1.componentProjects',
                 'form1.projects',
                 'form1.projects.teamMembers',
-                'form1.budgetSummaries',
+                'form1.projects.budgetSummaries',
                 'form1.commexApprover',
                 'form1.deanApprover',
                 'form1.asdApprover',
@@ -328,7 +327,7 @@ class EventController extends Controller
                 'form1.componentProjects',
                 'form1.projects',
                 'form1.projects.teamMembers',
-                'form1.budgetSummaries',
+                'form1.projects.budgetSummaries',
                 'form1.commexApprover',
                 'form1.deanApprover',
                 'form1.asdApprover',

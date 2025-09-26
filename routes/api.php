@@ -194,6 +194,30 @@ Route::prefix('v1')->group(function () {
             Route::post('/form3/reject', [Form3Controller::class, 'reject']);
         // UPDATED FORM REQUEST
 
+        // FORM 4 REQUEST
+            Route::get('form4', [\App\Http\Controllers\Form4Controller::class, 'index']);
+            Route::post('form4/create', [\App\Http\Controllers\Form4Controller::class, 'create']);
+            Route::post('form4/{id}', [\App\Http\Controllers\Form4Controller::class, 'update']);
+        // FORM 4 REQUEST
+
+        // FORM 5 REQUEST
+            Route::get('form5', [\App\Http\Controllers\Form5Controller::class, 'index']);
+            Route::post('form5/create', [\App\Http\Controllers\Form5Controller::class, 'create']);
+            Route::post('form5/{id}', [\App\Http\Controllers\Form5Controller::class, 'update']);
+        // FORM 5 REQUEST
+
+        // FORM 6 REQUEST
+            Route::get('form6', [\App\Http\Controllers\Form6Controller::class, 'index']);
+            Route::post('form6/create', [\App\Http\Controllers\Form6Controller::class, 'create']);
+            Route::post('form6/{id}', [\App\Http\Controllers\Form6Controller::class, 'update']);
+        // FORM 6 REQUEST
+
+        // FORM 7 REQUEST
+            Route::get('form7', [\App\Http\Controllers\Form7Controller::class, 'index']);
+            Route::post('form7/create', [\App\Http\Controllers\Form7Controller::class, 'create']);
+            Route::post('form7/{id}', [\App\Http\Controllers\Form7Controller::class, 'update']);
+        // FORM 7 REQUEST
+
         // FORM 14 REQUEST
             Route::get('form14/proposal', [\App\Http\Controllers\Form14Controller::class, 'index']);
             Route::post('form14/proposal/create', [\App\Http\Controllers\Form14Controller::class, 'store']);

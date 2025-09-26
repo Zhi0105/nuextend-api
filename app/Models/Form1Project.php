@@ -23,4 +23,7 @@ class Form1Project extends Model
     public function teamMembers() {
         return $this->hasMany(Form1ProjectTeamMember::class, 'form1_projects_id');
     }
+    public function budgetSummaries() {
+        return $this->hasMany(Form1BudgetSummary::class, 'form1_projects_id');
+    }
 }

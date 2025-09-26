@@ -51,9 +51,7 @@ class Form1ProgramProposal extends Model
     public function projects() {
         return $this->hasMany(Form1Project::class, 'form1_program_proposals_id');
     }
-    public function budgetSummaries() {
-        return $this->hasMany(Form1BudgetSummary::class, 'form1_program_proposals_id');
-    }
+
 
     public function commexApprover() {
         return $this->belongsTo(User::class, 'commex_approved_by')->withDefault();
