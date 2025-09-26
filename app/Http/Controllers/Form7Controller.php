@@ -6,7 +6,7 @@ use App\Models\Form7;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class Form6Controller extends Controller
+class Form7Controller extends Controller
 {
     /**
      * Display a listing of the resource.
