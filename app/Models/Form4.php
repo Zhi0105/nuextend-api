@@ -58,7 +58,7 @@ class Form4 extends Model
      public function event() {
         return $this->belongsTo(Event::class, 'event_id');
     }
-    
+
     public function commexApprover()
     {
         return $this->belongsTo(User::class, 'commex_approved_by');
