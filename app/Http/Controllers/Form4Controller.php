@@ -106,27 +106,7 @@ class Form4Controller extends Controller
             'm' => 'nullable|boolean',
             'n' => 'nullable|boolean',
             'o' => 'nullable|boolean',
-            'p' => 'nullable|boolean',
-
-            'is_commex' => 'nullable|boolean',
-            'is_dean'   => 'nullable|boolean',
-            'is_asd'    => 'nullable|boolean',
-            'is_ad'     => 'nullable|boolean',
-
-            'commex_remarks' => 'nullable|string',
-            'dean_remarks'   => 'nullable|string',
-            'asd_remarks'    => 'nullable|string',
-            'ad_remarks'     => 'nullable|string',
-
-            'commex_approved_by' => 'nullable|exists:users,id',
-            'dean_approved_by'   => 'nullable|exists:users,id',
-            'asd_approved_by'    => 'nullable|exists:users,id',
-            'ad_approved_by'     => 'nullable|exists:users,id',
-
-            'commex_approve_date' => 'nullable|date',
-            'dean_approve_date'   => 'nullable|date',
-            'asd_approve_date'    => 'nullable|date',
-            'ad_approve_date'     => 'nullable|date',
+            'p' => 'nullable|boolean'
         ]);
 
         try {
