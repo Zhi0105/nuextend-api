@@ -75,7 +75,11 @@ class EventController extends Controller
                 'form6.deanApprover',
                 'form6.asdApprover',
                 'form6.adApprover',
-
+                'form7',
+                'form7.commexApprover',
+                'form7.deanApprover',
+                'form7.asdApprover',
+                'form7.adApprover'
 
             ])->get();
 
@@ -384,6 +388,11 @@ class EventController extends Controller
                 'form6.deanApprover',
                 'form6.asdApprover',
                 'form6.adApprover',
+                'form7',
+                'form7.commexApprover',
+                'form7.deanApprover',
+                'form7.asdApprover',
+                'form7.adApprover'
 
             ])
             ->get();

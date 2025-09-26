@@ -94,5 +94,7 @@ class Event extends Model
     public function form6() {
         return $this->hasMany(Form6::class, 'event_id');
     }
-
+    public function form7() {
+        return $this->hasMany(Form7::class, 'event_id');
+    }
 }

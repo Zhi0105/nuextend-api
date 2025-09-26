@@ -225,6 +225,8 @@ Route::prefix('v1')->group(function () {
         // FORM 7 REQUEST
             Route::get('form7', [Form7Controller::class, 'index']);
             Route::post('form7/create', [Form7Controller::class, 'create']);
+            Route::post('/form7/approve', [Form7Controller::class, "approve"]);
+            Route::post('/form7/reject', [Form7Controller::class, 'reject']);
             Route::post('form7/{id}', [Form7Controller::class, 'update']);
         // FORM 7 REQUEST
 
