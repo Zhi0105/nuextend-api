@@ -18,6 +18,9 @@ class EventStatusSeeder extends Seeder
         EventStatus::create([ 'name' => 'pending' ]);
         EventStatus::create([ 'name' => 'submitted' ]);
         EventStatus::create([ 'name' => 'pulled-back' ]);
+        EventStatus::create([ 'name' => 'revise' ]);
+        EventStatus::create([ 'name' => 'approve' ]);
+        EventStatus::create([ 'name' => 'revised' ]);
         // WALA PANG NAIISIP NA ILALAGAY
     }
 }

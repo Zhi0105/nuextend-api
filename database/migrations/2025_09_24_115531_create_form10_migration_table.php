@@ -48,8 +48,7 @@ return new class extends Migration
             $table->text('activities')->nullable();
             $table->text('outputs')->nullable();
             $table->text('personnel')->nullable();
-            $table->decimal('budget', 12, 2)->nullable(); // number with decimal support
-
+            $table->string('budget')->nullable();
             $table->timestamps();
         });
     }
