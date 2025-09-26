@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('representing')->nullable();
             $table->string('partnership')->nullable();
             $table->string('entitled')->nullable();
-            $table->date('conducted_on')->nullable();
+            $table->string('conducted_on')->nullable();
             $table->string('behalf_of')->nullable();
             $table->string('organization')->nullable();
             $table->string('address')->nullable();

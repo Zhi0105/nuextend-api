@@ -32,8 +32,6 @@ class Form6 extends Model
     ];
 
     protected $casts = [
-        'conducted_on' => 'date',
-
         'is_commex' => 'boolean',
         'is_dean' => 'boolean',
         'is_asd' => 'boolean',
@@ -44,11 +42,11 @@ class Form6 extends Model
         'asd_approve_date' => 'date',
         'ad_approve_date' => 'date',
     ];
-    
+
       public function event() {
         return $this->belongsTo(Event::class, 'event_id');
     }
-    
+
     public function commexApprover()
     {
         return $this->belongsTo(User::class, 'commex_approved_by');
