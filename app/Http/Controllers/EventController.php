@@ -85,7 +85,13 @@ class EventController extends Controller
                 'form8.commexApprover',
                 'form8.deanApprover',
                 'form8.asdApprover',
-                'form8.adApprover'
+                'form8.adApprover',
+                'form9',
+                'form9.logicModels',
+                'form9.commexApprover',
+                'form9.deanApprover',
+                'form9.asdApprover',
+                'form9.adApprover'
 
             ])->get();
 
@@ -404,7 +410,13 @@ class EventController extends Controller
                 'form8.commexApprover',
                 'form8.deanApprover',
                 'form8.asdApprover',
-                'form8.adApprover'
+                'form8.adApprover',
+                'form9',
+                'form9.logicModels',
+                'form9.commexApprover',
+                'form9.deanApprover',
+                'form9.asdApprover',
+                'form9.adApprover'
 
             ])
             ->get();
