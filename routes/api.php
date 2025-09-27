@@ -239,6 +239,8 @@ Route::prefix('v1')->group(function () {
         // FORM 8 REQUEST
             Route::get('form8', [Form8Controller::class, 'index']);
             Route::post('form8/create', [Form8Controller::class, 'create']);
+            Route::post('/form8/approve', [Form8Controller::class, "approve"]);
+            Route::post('/form8/reject', [Form8Controller::class, 'reject']);
             Route::post('form8/{id}', [Form8Controller::class, 'update']);
         // FORM 8 REQUEST
 
