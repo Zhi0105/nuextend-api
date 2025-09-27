@@ -18,7 +18,7 @@ class Form1Controller extends Controller
                 'componentProjects',
                 'projects',
                 'projects.teamMembers',
-                'budgetSummaries',
+                'projects.budgetSummaries',
                 'commexApprover',
                 'deanApprover',
                 'asdApprover',
