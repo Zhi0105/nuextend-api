@@ -91,8 +91,13 @@ class EventController extends Controller
                 'form9.commexApprover',
                 'form9.deanApprover',
                 'form9.asdApprover',
-                'form9.adApprover'
-
+                'form9.adApprover',
+                'form10',
+                'form10.oaopb',
+                'form10.commexApprover',
+                'form10.deanApprover',
+                'form10.asdApprover',
+                'form10.adApprover'
             ])->get();
 
             return response()->json([
@@ -416,8 +421,13 @@ class EventController extends Controller
                 'form9.commexApprover',
                 'form9.deanApprover',
                 'form9.asdApprover',
-                'form9.adApprover'
-
+                'form9.adApprover',
+                'form10',
+                'form10.oaopb',
+                'form10.commexApprover',
+                'form10.deanApprover',
+                'form10.asdApprover',
+                'form10.adApprover'
             ])
             ->get();
 

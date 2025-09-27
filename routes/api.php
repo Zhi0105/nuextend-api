@@ -255,6 +255,8 @@ Route::prefix('v1')->group(function () {
         // FORM 10 REQUEST
             Route::get('form10', [Form10Controller::class, 'index']);
             Route::post('form10/create', [Form10Controller::class, 'create']);
+            Route::post('/form10/approve', [Form10Controller::class, "approve"]);
+            Route::post('/form10/reject', [Form10Controller::class, 'reject']);
             Route::post('form10/{id}', [Form10Controller::class, 'update']);
         // FORM 10 REQUEST
 
