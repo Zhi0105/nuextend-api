@@ -34,19 +34,4 @@ class Form11TravelDetail extends Model
         return $this->belongsTo(Form11::class, 'form11_id');
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($travelDetail) {
-            if ($travelDetail->departure && $travelDetail->arrival) {
-                $departure = Carbon::parse($travelDetail->departure);
-                $arrival = Carbon::parse($travelDetail->arrival);
-
-                $diff = $departure->diff($arrival);
-
-                $travelDetail->trip_duration = $diff->format('%h hours %i minutes');
-            }
-        });
-    }
 }

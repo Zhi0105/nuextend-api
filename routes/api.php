@@ -263,6 +263,8 @@ Route::prefix('v1')->group(function () {
         // FORM 11 REQUEST
             Route::get('form11', [Form11Controller::class, 'index']);
             Route::post('form11/create', [Form11Controller::class, 'create']);
+            Route::post('/form11/approve', [Form11Controller::class, "approve"]);
+            Route::post('/form11/reject', [Form11Controller::class, 'reject']);
             Route::post('form11/{id}', [Form11Controller::class, 'update']);
         // FORM 11 REQUEST
 

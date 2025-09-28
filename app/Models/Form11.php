@@ -15,7 +15,7 @@ class Form11 extends Model
         'event_id',
         'transportation_medium',
         'driver',
-        
+
         'is_commex', 'is_dean', 'is_asd', 'is_ad',
         'commex_remarks', 'dean_remarks', 'asd_remarks', 'ad_remarks',
 
@@ -44,7 +44,7 @@ class Form11 extends Model
     public function event() {
         return $this->belongsTo(Event::class, 'event_id');
     }
-    
+
     public function commexApprover()
     {
         return $this->belongsTo(User::class, 'commex_approved_by');
