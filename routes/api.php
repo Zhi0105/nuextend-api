@@ -271,6 +271,8 @@ Route::prefix('v1')->group(function () {
         // FORM 12 REQUEST
             Route::get('form12', [Form12Controller::class, 'index']);
             Route::post('form12/create', [Form12Controller::class, 'create']);
+            Route::post('/form12/approve', [Form12Controller::class, "approve"]);
+            Route::post('/form12/reject', [Form12Controller::class, 'reject']);
             Route::post('form12/{id}', [Form12Controller::class, 'update']);
         // FORM 12 REQUEST
 

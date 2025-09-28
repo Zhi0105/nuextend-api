@@ -22,11 +22,11 @@ class Form12Attendee extends Model
     public function form12()
     {
         return $this->belongsTo(Form12::class, 'form12_id');
-    }
+}
 
-    public function school()
+    public function program()
     {
-        return $this->belongsTo(School::class, 'programs_id');
+        return $this->belongsTo(Program::class, 'programs_id');
     }
 
     public function department()
