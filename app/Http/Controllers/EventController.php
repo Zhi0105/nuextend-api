@@ -550,9 +550,9 @@ class EventController extends Controller
         }
     }
     public function posted(Request $request) {
-        $request->validate([
-            "id" => "required",
-        ]);
+            $request->validate([
+                "id" => "required",
+            ]);
 
         try {
             $event = Event::find($request->id);
@@ -564,41 +564,53 @@ class EventController extends Controller
                 ], 404);
             }
 
-            $forms = $event->forms;
+            // collect all form relations (form1 ... form12)
+            $formRelations = [
+                'form1', 'form2', 'form3', 'form4',
+                'form5', 'form6', 'form7', 'form8',
+                'form9', 'form10', 'form11', 'form12'
+            ];
 
-            if ($forms->isEmpty()) {
-                return response()->json([
-                    'status' => 404,
-                    'message' => "No form associated with this event"
-                ], 404);
+            $hasForms = false;
+
+            foreach ($formRelations as $relation) {
+                $forms = $event->$relation; // ex: $event->form1
+
+                if ($forms->isNotEmpty()) {
+                    $hasForms = true;
+
+                    foreach ($forms as $form) {
+                        if (!$form->is_commex) {
+                            $form->is_commex = 1;
+                            $form->commex_approved_by = 1;
+                            $form->commex_approve_date = now();
+                        }
+                        if (!$form->is_dean) {
+                            $form->is_dean = 1;
+                            $form->dean_approved_by = 1;
+                            $form->dean_approve_date = now();
+                        }
+                        if (!$form->is_asd) {
+                            $form->is_asd = 1;
+                            $form->asd_approved_by = 1;
+                            $form->asd_approve_date = now();
+                        }
+                        if (!$form->is_ad) {
+                            $form->is_ad = 1;
+                            $form->ad_approved_by = 1;
+                            $form->ad_approve_date = now();
+                        }
+
+                        $form->save();
+                    }
+                }
             }
 
-            foreach ($forms as $form) {
-                if (!$form->is_commex) {
-                    $form->is_commex = 1;
-                    $form->commex_approved_by = 1;
-                    $form->commex_approve_date = now();
-                }
-
-                if (!$form->is_dean) {
-                    $form->is_dean = 1;
-                    $form->dean_approved_by = 1;
-                    $form->dean_approve_date = now();
-                }
-
-                if (!$form->is_asd) {
-                    $form->is_asd = 1;
-                    $form->asd_approved_by = 1;
-                    $form->asd_approve_date = now();
-                }
-
-                if (!$form->is_ad) {
-                    $form->is_ad = 1;
-                    $form->ad_approved_by = 1;
-                    $form->ad_approve_date = now();
-                }
-
-                $form->save();
+            if (!$hasForms) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No forms (form1 - form12) associated with this event"
+                ], 404);
             }
 
             $event->update([
@@ -607,7 +619,7 @@ class EventController extends Controller
 
             return response()->json([
                 'status' => 200,
-                "message" => "Event and associated forms posted"
+                "message" => "Event and all associated forms posted"
             ], 200);
 
         } catch (\Exception $e) {
