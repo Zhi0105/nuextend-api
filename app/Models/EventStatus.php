@@ -15,4 +15,8 @@ class EventStatus extends Model
     public function events() {
         return $this->hasMany(Event::class, 'event_status_id');
     }
+
+    public function form14() {
+        return $this->hasMany(Form14::class, 'event_status_id');
+    }
 }

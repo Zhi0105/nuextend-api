@@ -128,85 +128,89 @@ class Form14Controller extends Controller
         return response()->json($reports);
     }
     
-  public function updateStatus(Request $request, $id)
-{
-    try {
-        $validated = $request->validate([
-            'event_status_id' => 'required|exists:event_status,id',
-            'remarks' => 'nullable|string',
-        ]);
+    public function updateStatus(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'event_status_id' => 'required|exists:event_status,id',
+                'remarks' => 'nullable|string',
+            ]);
 
-        $form14 = Form14::findOrFail($id);
-        $user = $request->user();
-        $roleId = $user->role_id;
+            $form14 = Form14::findOrFail($id);
+            $user = $request->user();
+            $roleId = $user->role_id;
 
-        switch ($validated['event_status_id']) {
-            // SUBMIT action
-            case 4:
-                $form14->event_status_id = 4;
-                break;
+            switch ($validated['event_status_id']) {
+                // SUBMIT action
+                case 4:
+                    $form14->event_status_id = 4;
+                    break;
 
-            // PULL-BACK action (creator only)
-            case 5:
-                $form14->event_status_id = 5;
-                break;
+                // PULL-BACK action (creator only)
+                case 5:
+                    $form14->event_status_id = 5;
+                    break;
 
-            // REVISE action (role 1 = Commex, role 10 = ASD)
-            case 6:
-                if ($roleId == 1) {
-                    $form14->commex_remarks = $validated['remarks'] ?? null;
-                } elseif ($roleId == 10) {
-                    $form14->asd_remarks = $validated['remarks'] ?? null;
-                } else {
+                case 9:
+                    $form14->event_status_id = 9;
+                    break;
+
+                // REVISE action (role 1 = Commex, role 10 = ASD)
+                case 6:
+                    if ($roleId == 1) {
+                        $form14->commex_remarks = $validated['remarks'] ?? null;
+                    } elseif ($roleId == 10) {
+                        $form14->asd_remarks = $validated['remarks'] ?? null;
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'You are not allowed to send this report for revision.'
+                        ], 403);
+                    }
+                    $form14->event_status_id = 6;
+                    break;
+
+                // APPROVE action
+                case 7:
+                    if ($roleId == 1) {
+                        $form14->is_commex = true;
+                        $form14->commex_approved_by = $user->id;
+                        $form14->commex_approve_date = now();
+                    }
+                    if ($roleId == 10) {
+                        $form14->is_asd = true;
+                        $form14->asd_approved_by = $user->id;
+                        $form14->asd_approve_date = now();
+                    }
+                    // Only mark fully approved if both roles have approved
+                    if ($form14->is_commex && $form14->is_asd) {
+                        $form14->event_status_id = 7;
+                    }
+                    break;
+
+                default:
                     return response()->json([
                         'success' => false,
-                        'message' => 'You are not allowed to send this report for revision.'
-                    ], 403);
-                }
-                $form14->event_status_id = 6;
-                break;
+                        'message' => 'Invalid action.'
+                    ], 400);
+            }
 
-            // APPROVE action
-            case 7:
-                if ($roleId == 1) {
-                    $form14->is_commex = true;
-                    $form14->commex_approved_by = $user->id;
-                    $form14->commex_approve_date = now();
-                }
-                if ($roleId == 10) {
-                    $form14->is_asd = true;
-                    $form14->asd_approved_by = $user->id;
-                    $form14->asd_approve_date = now();
-                }
-                // Only mark fully approved if both roles have approved
-                if ($form14->is_commex && $form14->is_asd) {
-                    $form14->event_status_id = 7;
-                }
-                break;
+            $form14->save();
 
-            default:
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid action.'
-                ], 400);
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated successfully!',
+                'data' => $form14,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update status',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $form14->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Status updated successfully!',
-            'data' => $form14,
-        ], 200);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to update status',
-            'error' => $e->getMessage(),
-        ], 500);
     }
-}
 
 }
 

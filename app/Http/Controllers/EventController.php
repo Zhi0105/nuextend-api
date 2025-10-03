@@ -15,6 +15,10 @@ class EventController extends Controller
             $events = Event::with('skills')->with([
                 'forms',
                 'activity.progress_report',
+                'activity.form14',
+                'activity.form14.budgetSummaries',
+                'activity.form14.commexApprover',
+                'activity.form14.asdApprover',
                 'unsdgs',
                 'eventstatus',
                 'user',
@@ -112,7 +116,13 @@ class EventController extends Controller
                 'form12.commexApprover',
                 'form12.deanApprover',
                 'form12.asdApprover',
-                'form12.adApprover'
+                'form12.adApprover',
+                // 'form14',
+                // 'form14.activities',
+                // 'form14.event_status',
+                // 'form14.budgetSummaries',
+                // 'form14.commexApprover',
+                // 'form14.asdApprover'
             ])->get();
 
             return response()->json([
@@ -363,10 +373,15 @@ class EventController extends Controller
             ->with([
                 'skills',
                 'activity.progress_report',
+                'activity.form14',
+                'activity.form14.budgetSummaries',
+                'activity.form14.commexApprover',
+                'activity.form14.asdApprover',
                 'unsdgs',
                 'eventstatus',
                 'user',
                 'user.department',
+                'user.program',
                 'user.role',
                 'eventtype',
                 'model',
@@ -457,7 +472,7 @@ class EventController extends Controller
                 'form12.commexApprover',
                 'form12.deanApprover',
                 'form12.asdApprover',
-                'form12.adApprover'
+                'form12.adApprover',
             ])
             ->get();
 

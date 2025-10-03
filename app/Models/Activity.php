@@ -24,4 +24,9 @@ class Activity extends Model
     public function progress_report() {
         return $this->hasMany(ProgressReport::class, 'activity_id');
     }
+
+    public function form14() {
+        return $this->hasMany(Form14::class, 'activities_id');
+    }
+    
 }

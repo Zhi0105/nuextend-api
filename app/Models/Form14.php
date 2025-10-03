@@ -33,11 +33,11 @@ class Form14 extends Model
     ];
 
     public function activities(){
-        return $this->belongsTo(activities::class, 'activities_id');
+        return $this->belongsTo(Activity::class, 'activities_id');
     }
 
     public function event_status(){
-        return $this->belongsTo(event_status::class, 'event_status_id');
+        return $this->belongsTo(EventStatus::class, 'event_status_id');
     }
 
 
@@ -52,4 +52,4 @@ class Form14 extends Model
     public function asdApprover(){
         return $this->belongsTo(User::class, 'asd_approved_by')->withDefault();
     }
-}
+} 
