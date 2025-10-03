@@ -37,6 +37,8 @@ use App\Http\Controllers\UnsdgController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\AnnouncementController;
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -285,6 +287,24 @@ Route::prefix('v1')->group(function () {
             Route::get('form14/activity/{activities_id}', [Form14Controller::class, 'getReportsByActivity']);
             Route::patch('form14/{id}/status', [Form14Controller::class, 'updateStatus']);
             // FORM 14 REQUEST
+
+            //Attachments
+            Route::get('/event/{event_id}', [AttachmentController::class, 'index']);
+            Route::post('/', [AttachmentController::class, 'store']);
+            Route::put('/{id}', [AttachmentController::class, 'update']);
+            Route::patch('/{id}/remarks', [AttachmentController::class, 'updateRemarks']);
+            Route::delete('/{id}', [AttachmentController::class, 'delete']);
+            Route::get('/{id}', [AttachmentController::class, 'show']);   
+            //Attachments
+
+             // Announcement
+            Route::get('/announcements', [AnnouncementController::class, 'index']);
+            Route::post('/announcements', [AnnouncementController::class, 'store']);
+            Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);
+            Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update']);
+            Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy']);
+            Route::get('/events/{eventId}/announcements', [AnnouncementController::class, 'getByEvent']);
+            // Announcement
     });
 });
 

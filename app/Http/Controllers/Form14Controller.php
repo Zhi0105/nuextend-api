@@ -10,22 +10,19 @@ use Illuminate\Http\Request;
 class Form14Controller extends Controller
 {
     // GET all form14 records with budget summaries
-    public function index()
-    {
+    public function index(){
         $form14 = Form14::with('budgetSummaries')->get();
         return response()->json($form14);
     }
 
     // GET single form14 record with budget summaries
-    public function show($id)
-    {
+    public function show($id){
         $form14 = Form14::with('budgetSummaries')->findOrFail($id);
         return response()->json($form14);
     }
 
     // CREATE form14 with budget summaries
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $validated = $request->validate([
             'activities_id' => 'required|exists:activities,id',
             'event_status_id' => 'required|exists:event_status,id',
@@ -57,8 +54,7 @@ class Form14Controller extends Controller
     }
 
     // UPDATE form14 and its budget summaries
-   public function update(Request $request, $id)
-{
+    public function update(Request $request, $id){
     $form14 = Form14::findOrFail($id);
 
     $validated = $request->validate([
@@ -108,10 +104,8 @@ class Form14Controller extends Controller
     return response()->json($form14->load('budgetSummaries'));
 }
 
-
     // DELETE form14 (cascades to budget summaries)
-    public function destroy($id)
-    {
+    public function destroy($id){
         $form14 = Form14::findOrFail($id);
         $form14->delete();
 
@@ -119,8 +113,7 @@ class Form14Controller extends Controller
     }
     
     // GET all reports for a specific activity, including budget summaries
-    public function getReportsByActivity($activities_id)
-    {
+    public function getReportsByActivity($activities_id){
         $reports = Form14::with('budgetSummaries')
             ->where('activities_id', $activities_id)
             ->get();
@@ -128,8 +121,7 @@ class Form14Controller extends Controller
         return response()->json($reports);
     }
     
-    public function updateStatus(Request $request, $id)
-    {
+    public function updateStatus(Request $request, $id){
         try {
             $validated = $request->validate([
                 'event_status_id' => 'required|exists:event_status,id',
