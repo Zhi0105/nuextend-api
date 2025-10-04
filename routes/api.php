@@ -131,8 +131,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/skill/delete', [SkillController::class, 'delete']);
         // SKILLS END
 
-
-
         // ORGANIZATION START
             Route::post('/organization/create', [OrganizationController::class, 'create']);
             Route::post('/organization/update', [OrganizationController::class, 'update']);
@@ -141,7 +139,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/organization/{id}/members', [OrganizationController::class, 'members']);
             Route::post('/organization/role/change', [OrganizationController::class, 'role_change']);
             Route::post('/organization/remove_member', [OrganizationController::class, 'remove_member']);
-            // ORGANIZATION END
+        // ORGANIZATION END
 
         // EVENT START
             Route::get('/event/all', [EventController::class, 'index']);
@@ -286,25 +284,25 @@ Route::prefix('v1')->group(function () {
             Route::delete('form14/proposal/{id}', [Form14Controller::class, 'destroy']);
             Route::get('form14/activity/{activities_id}', [Form14Controller::class, 'getReportsByActivity']);
             Route::patch('form14/{id}/status', [Form14Controller::class, 'updateStatus']);
-            // FORM 14 REQUEST
+        // FORM 14 REQUEST
 
-            //Attachments
-            Route::get('/event/{event_id}', [AttachmentController::class, 'index']);
-            Route::post('/', [AttachmentController::class, 'store']);
-            Route::put('/{id}', [AttachmentController::class, 'update']);
-            Route::patch('/{id}/remarks', [AttachmentController::class, 'updateRemarks']);
-            Route::delete('/{id}', [AttachmentController::class, 'delete']);
-            Route::get('/{id}', [AttachmentController::class, 'show']);   
-            //Attachments
+        // Attachments
+            Route::get('/attachments/event/{event_id}', [AttachmentController::class, 'index']); // specific
+            Route::post('/attachments', [AttachmentController::class, 'store']);
+            Route::put('/attachments/{id}', [AttachmentController::class, 'update']);
+            Route::patch('/attachments/{id}/remarks', [AttachmentController::class, 'updateRemarks']);
+            Route::delete('/attachments/{id}', [AttachmentController::class, 'delete']);
+            Route::get('/attachments/{id}', [AttachmentController::class, 'show']);     
+        // Attachments
 
-             // Announcement
+        // Announcement
             Route::get('/announcements', [AnnouncementController::class, 'index']);
             Route::post('/announcements', [AnnouncementController::class, 'store']);
             Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);
             Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update']);
             Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy']);
             Route::get('/events/{eventId}/announcements', [AnnouncementController::class, 'getByEvent']);
-            // Announcement
+        // Announcement
     });
 });
 
