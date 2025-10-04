@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->string('name');
             $table->string('file');
-            $table->string('remarks');
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }
