@@ -22,7 +22,7 @@ return new class extends Migration
             $table->bigInteger('budget_proposal')->nullable();
             // $table->string('program_model_name')->nullable();
             $table->string('term');
-            // $table->text('remarks')->nullable(); // Optional, remove nullable() if required
+            $table->text('description')->nullable(); // Optional, remove nullable() if required
 
             $table->timestamps(); // created_at and updated_at
         });

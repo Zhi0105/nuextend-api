@@ -117,12 +117,7 @@ class EventController extends Controller
                 'form12.deanApprover',
                 'form12.asdApprover',
                 'form12.adApprover',
-                // 'form14',
-                // 'form14.activities',
-                // 'form14.event_status',
-                // 'form14.budgetSummaries',
-                // 'form14.commexApprover',
-                // 'form14.asdApprover'
+                
             ])->get();
 
             return response()->json([
@@ -145,6 +140,7 @@ class EventController extends Controller
             "event_type_id" => 'required',
             "event_status_id" => 'sometimes',
             "name" => 'sometimes',
+            "description" => 'sometimes',
             "target_group" => 'sometimes',
             "term" => "required|string",
             "budget_proposal" => "sometimes",
@@ -170,6 +166,7 @@ class EventController extends Controller
                 'event_type_id' => $request->event_type_id,
                 'event_status_id' => 1,
                 'name' => $request->name,
+                'description' => $request->description,
                 'target_group' => $request->target_group,
                 'term' => $request->term,
                 'budget_proposal' => $request->budget_proposal
@@ -213,6 +210,7 @@ class EventController extends Controller
             "event_type_id" => "sometimes|integer|exists:event_types,id",
             "event_status_id" => "sometimes|integer|exists:event_statuses,id",
             "name" => "sometimes|nullable|string",
+            "description"=> "sometimes|nullable|string",
             "target_group" => "sometimes|nullable|string",
             "term" => "sometimes|string",
             "budget_proposal" => "sometimes|nullable",
@@ -252,6 +250,7 @@ class EventController extends Controller
                     'event_type_id',
                     'event_status_id',
                     'name',
+                    'description',
                     'target_group',
                     'term',
                     'budget_proposal',

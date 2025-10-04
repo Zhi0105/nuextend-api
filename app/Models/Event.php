@@ -21,6 +21,7 @@ class Event extends Model
         'target_group',
         'term',
         'budget_proposal',
+        'description',
         'is_posted',
     ];
 
@@ -111,5 +112,11 @@ class Event extends Model
     }
     public function form12() {
         return $this->hasMany(Form12::class, 'event_id');
+    }
+    public function announcement() {
+        return $this->hasMany(Announcement::class, 'event_id');
+    }
+    public function attachment() {
+        return $this->hasMany(Attachment::class, 'event_id');
     }
 }
