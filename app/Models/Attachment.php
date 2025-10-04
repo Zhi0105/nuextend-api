@@ -20,11 +20,7 @@ class Attachment extends Model
         'remarks',
     ];
 
-    /**
-     * Relationship: Each attachment belongs to an event
-     */
-    public function event()
-    {
+    public function event(){
         return $this->belongsTo(Event::class, 'event_id');
     }
 }

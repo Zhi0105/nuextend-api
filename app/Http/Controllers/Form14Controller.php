@@ -55,54 +55,54 @@ class Form14Controller extends Controller
 
     // UPDATE form14 and its budget summaries
     public function update(Request $request, $id){
-    $form14 = Form14::findOrFail($id);
+        $form14 = Form14::findOrFail($id);
 
-    $validated = $request->validate([
-        'objectives' => 'nullable|string',
-        'target_group' => 'nullable|string',
-        'description' => 'nullable|string',
-        'achievements' => 'nullable|string',
-        'challenges' => 'nullable|string',
-        'feedback' => 'nullable|string',
-        'acknowledgements' => 'nullable|string',
-        'budget_summaries' => 'nullable|array',
-        'budget_summaries.*.id' => 'nullable|exists:budget_summaries,id',
-        'budget_summaries.*.item' => 'nullable|string',
-        'budget_summaries.*.cost' => 'required|numeric',
-        'budget_summaries.*.personnel' => 'nullable|string',
-        'budget_summaries.*.quantity' => 'nullable|integer',
-        'budget_summaries.*.description' => 'nullable|string',
-    ]);
+        $validated = $request->validate([
+            'objectives' => 'nullable|string',
+            'target_group' => 'nullable|string',
+            'description' => 'nullable|string',
+            'achievements' => 'nullable|string',
+            'challenges' => 'nullable|string',
+            'feedback' => 'nullable|string',
+            'acknowledgements' => 'nullable|string',
+            'budget_summaries' => 'nullable|array',
+            'budget_summaries.*.id' => 'nullable|exists:budget_summaries,id',
+            'budget_summaries.*.item' => 'nullable|string',
+            'budget_summaries.*.cost' => 'required|numeric',
+            'budget_summaries.*.personnel' => 'nullable|string',
+            'budget_summaries.*.quantity' => 'nullable|integer',
+            'budget_summaries.*.description' => 'nullable|string',
+        ]);
 
-    $validated['event_status_id'] = 8;
+        $validated['event_status_id'] = 8;
 
-    // Only update form14 fields, not budget_summaries
-    $form14->update(collect($validated)->except('budget_summaries')->toArray());
+        // Only update form14 fields, not budget_summaries
+        $form14->update(collect($validated)->except('budget_summaries')->toArray());
 
-    if (isset($validated['budget_summaries'])) {
-        $existingIds = $form14->budgetSummaries()->pluck('id')->toArray();
-        $incomingIds = collect($validated['budget_summaries'])->pluck('id')->filter()->toArray();
+        if (isset($validated['budget_summaries'])) {
+            $existingIds = $form14->budgetSummaries()->pluck('id')->toArray();
+            $incomingIds = collect($validated['budget_summaries'])->pluck('id')->filter()->toArray();
 
-        // Delete removed budget summaries
-        $toDelete = array_diff($existingIds, $incomingIds);
-        if (!empty($toDelete)) {
-            Form14BudgetSummary::whereIn('id', $toDelete)->delete();
-        }
+            // Delete removed budget summaries
+            $toDelete = array_diff($existingIds, $incomingIds);
+            if (!empty($toDelete)) {
+                Form14BudgetSummary::whereIn('id', $toDelete)->delete();
+            }
 
-        // Update or create
-        foreach ($validated['budget_summaries'] as $budget) {
-            if (isset($budget['id'])) {
-                $summary = Form14BudgetSummary::find($budget['id']);
-                $summary->update($budget);
-            } else {
-                $budget['form14_id'] = $form14->form14_id;
-                Form14BudgetSummary::create($budget);
+            // Update or create
+            foreach ($validated['budget_summaries'] as $budget) {
+                if (isset($budget['id'])) {
+                    $summary = Form14BudgetSummary::find($budget['id']);
+                    $summary->update($budget);
+                } else {
+                    $budget['form14_id'] = $form14->form14_id;
+                    Form14BudgetSummary::create($budget);
+                }
             }
         }
-    }
 
-    return response()->json($form14->load('budgetSummaries'));
-}
+        return response()->json($form14->load('budgetSummaries'));
+    }
 
     // DELETE form14 (cascades to budget summaries)
     public function destroy($id){
