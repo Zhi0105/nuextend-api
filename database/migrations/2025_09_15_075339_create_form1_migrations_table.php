@@ -36,10 +36,10 @@ return new class extends Migration
             $table->foreignId('asd_approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('ad_approved_by')->nullable()->constrained('users')->nullOnDelete();
 
-            $table->date('commex_approve_date')->nullable();
-            $table->date('dean_approve_date')->nullable();
-            $table->date('asd_approve_date')->nullable();
-            $table->date('ad_approve_date')->nullable();
+            $table->datetime('commex_approve_date')->nullable();
+            $table->datetime('dean_approve_date')->nullable();
+            $table->datetime('asd_approve_date')->nullable();
+            $table->datetime('ad_approve_date')->nullable();
             $table->timestamps();
         });
     // Team members under a program proposal
