@@ -21,10 +21,10 @@ return new class extends Migration
             // Short FK name to avoid MySQL 64-char limit
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->foreign('event_type_id', 'fk_f2pp_event_type')->references('id')->on('event_types')->onDelete('cascade');
-            $table->string('proponents')->nullable();
-            $table->string('collaborators')->nullable();
+            $table->text('proponents')->nullable();
+            $table->text('collaborators')->nullable();
             $table->string('participants')->nullable();
-            $table->string('partners')->nullable();
+            $table->text('partners')->nullable();
             $table->string('implementationDate')->nullable();
             $table->text('area')->nullable();
             $table->string('budgetRequirement')->nullable();
