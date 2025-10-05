@@ -3,12 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -26,14 +24,15 @@ return new class extends Migration
             $table->string('contact');
             $table->boolean('status')->default(false);
             $table->boolean('is_EsVolunteer')->default(false);
+            $table->binary('esign')->nullable(); // will be changed to MEDIUMBLOB
             $table->rememberToken();
             $table->timestamps();
         });
+
+        // Convert the binary column to MEDIUMBLOB
+        DB::statement('ALTER TABLE users MODIFY esign MEDIUMBLOB NULL');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

@@ -13,97 +13,111 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Helper function to read image data safely
+        $getEsign = function (string $filename) {
+            $path = storage_path('app/public/attachments/' . $filename);
+            return file_exists($path) ? file_get_contents($path) : null;
+        };
+
         User::create([
             'role_id' => 1,
-            'firstname' => 'comex',
-            'middlename' => 'comex',
-            'lastname' => 'comex',
+            'firstname' => 'fioglo',
+            'middlename' => 'c',
+            'lastname' => 'baluyot',
             'email' => 'admin@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('admin123'),
-            'contact' => '21387129831983'
+            'contact' => '09111111111',
+            'esign' => $getEsign('comex_esign.png'),
         ]);
 
         User::create([
             'role_id' => 10,
-            'firstname' => 'asd',
-            'middlename' => 'asd',
-            'lastname' => 'asd',
+            'firstname' => 'bon kervin',
+            'middlename' => 'd',
+            'lastname' => 'venturina',
             'email' => 'asd@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('asd123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('asd_esign.png'),
         ]);
 
         User::create([
             'role_id' => 11,
-            'firstname' => 'ad',
-            'middlename' => 'ad',
-            'lastname' => 'ad',
+            'firstname' => 'jayson raymond',
+            'middlename' => 'd',
+            'lastname' => 'bermudez',
             'email' => 'ad@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('ad123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('ad_esign.png'),
         ]);
 
         User::create([
             'role_id' => 9,
             'department_id' => 1,
-            'firstname' => 'sba',
-            'middlename' => 'nu',
-            'lastname' => 'dean',
+            'firstname' => 'fransis allan',
+            'middlename' => 'C',
+            'lastname' => 'bernales',
             'email' => 'deansba@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('dean123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('deansba_esign.png'),
         ]);
 
         User::create([
             'role_id' => 9,
             'department_id' => 2,
-            'firstname' => 'seas',
-            'middlename' => 'nu',
-            'lastname' => 'dean',
+            'firstname' => 'ma. liwayway',
+            'middlename' => 'f',
+            'lastname' => 'fernando',
             'email' => 'deanseas@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('dean123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('deanseas_esign.png'),
         ]);
 
         User::create([
             'role_id' => 9,
             'department_id' => 3,
-            'firstname' => 'set',
-            'middlename' => 'nu',
-            'lastname' => 'dean',
-            'email' => 'deanset@nu-baliwag.edu.ph',
+            'firstname' => 'jenalyn',
+            'middlename' => 'd',
+            'lastname' => 'columna',
+            'email' => 'deanseat@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('dean123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('deanseat_esign.png'),
         ]);
 
         User::create([
             'role_id' => 9,
             'department_id' => 4,
-            'firstname' => 'sa',
-            'middlename' => 'nu',
-            'lastname' => 'dean',
+            'firstname' => 'chona',
+            'middlename' => 'e',
+            'lastname' => 'ponce',
             'email' => 'deansa@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('dean123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('deansa_esign.png'),
         ]);
 
         User::create([
             'role_id' => 9,
             'department_id' => 5,
-            'firstname' => 'sthm',
-            'middlename' => 'nu',
-            'lastname' => 'dean',
+            'firstname' => 'mark chris',
+            'middlename' => 'm',
+            'lastname' => 'lapuz',
             'email' => 'deansthm@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('dean123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('deansthm_esign.png'),
         ]);
 
         User::create([
@@ -115,8 +129,8 @@ class UserSeeder extends Seeder
             'email' => 'deanshs@nu-baliwag.edu.ph',
             'email_verified_at' => now(),
             'password' => bcrypt('dean123'),
-            'contact' => '09999999999'
+            'contact' => '09999999999',
+            'esign' => $getEsign('deanshs_esign.png'),
         ]);
-
     }
 }

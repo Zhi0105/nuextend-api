@@ -57,6 +57,26 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+      public function getEsignAttribute($value)
+    {
+        if ($value) {
+            // Convert BLOB to base64
+            $base64 = base64_encode($value);
+            // Determine MIME type (you might need to adjust this based on your image format)
+            $mimeType = 'image/png'; // Default to PNG
+            
+            // Check image format (basic detection)
+            if (strpos($value, "\xFF\xD8\xFF") === 0) {
+                $mimeType = 'image/jpeg';
+            } elseif (strpos($value, "\x89PNG\r\n\x1a\n") === 0) {
+                $mimeType = 'image/png';
+            }
+            
+            return "data:{$mimeType};base64,{$base64}";
+        }
+        return null;
+    }
+
     public function department() {
         return $this->belongsTo(Department::class, 'department_id');
     }
