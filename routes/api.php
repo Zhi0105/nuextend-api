@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -79,8 +80,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/email/verify-status', [EmailVerificationController::class, 'verifyStatus'])->middleware('auth:sanctum');
     // EMAIL VERIFICATION
 
-
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
+            Route::get('/terms', [DashboardController::class, 'getTerms']);
+            Route::post('/dashboard', [DashboardController::class, 'index']);
+
 
         // FORM UPLOADING START
             Route::get('/form/{id}', [FormController::class, 'index']);
@@ -292,7 +296,7 @@ Route::prefix('v1')->group(function () {
             Route::put('/attachments/{id}', [AttachmentController::class, 'update']);
             Route::patch('/attachments/{id}/remarks', [AttachmentController::class, 'updateRemarks']);
             Route::delete('/attachments/{id}', [AttachmentController::class, 'delete']);
-            Route::get('/attachments/{id}', [AttachmentController::class, 'show']);     
+            Route::get('/attachments/{id}', [AttachmentController::class, 'show']);
         // Attachments
 
         // Announcement
