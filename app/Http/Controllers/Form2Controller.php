@@ -9,6 +9,7 @@ use App\Models\Form2ProjectProposal;
 use App\Models\Form2ProjectRisk;
 use App\Models\Form2ProjectStaffing;
 use App\Models\Form2ProjectWorkPlan;
+use App\Models\FormRemark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -438,15 +439,13 @@ class Form2Controller extends Controller
         }
     }
     public function approve(Request $request) {
-
         $request->validate([
             "id" => 'required|integer',
             "role_id" => 'required|integer',
-            "commex_remarks" => 'sometimes',
-            "dean_remarks" => 'sometimes',
-            "asd_remarks" => 'sometimes',
-            "ad_remarks" => 'sometimes',
-
+            "commex_remarks" => 'sometimes|string|nullable',
+            "dean_remarks" => 'sometimes|string|nullable',
+            "asd_remarks" => 'sometimes|string|nullable',
+            "ad_remarks" => 'sometimes|string|nullable',
         ]);
 
         try {
@@ -461,20 +460,47 @@ class Form2Controller extends Controller
 
             $userId = auth()->id(); // current logged-in user
 
+            // Prepare update data for each role
             $roleUpdateMap = [
-                1  => ['is_commex' => true, 'commex_remarks' => $request->input('commex_remarks'), 'commex_approved_by' => $userId, 'commex_approve_date' => now()],
-                9  => ['is_dean' => true, 'dean_remarks' => $request->input('dean_remarks'), 'dean_approved_by' => $userId, 'dean_approve_date' => now()],
-                10 => ['is_asd' => true, 'asd_remarks' => $request->input('asd_remarks'), 'asd_approved_by' => $userId, 'asd_approve_date' => now()],
-                11 => ['is_ad' => true, 'ad_remarks' => $request->input('ad_remarks'), 'ad_approved_by' => $userId, 'ad_approve_date' => now()],
+                1  => [
+                    'is_commex' => true, 
+                    'commex_remarks' => $request->input('commex_remarks'), 
+                    'commex_approved_by' => $userId, 
+                    'commex_approve_date' => now()
+                ],
+                9  => [
+                    'is_dean' => true, 
+                    'dean_remarks' => $request->input('dean_remarks'), 
+                    'dean_approved_by' => $userId, 
+                    'dean_approve_date' => now()
+                ],
+                10 => [
+                    'is_asd' => true, 
+                    'asd_remarks' => $request->input('asd_remarks'), 
+                    'asd_approved_by' => $userId, 
+                    'asd_approve_date' => now()
+                ],
+                11 => [
+                    'is_ad' => true, 
+                    'ad_remarks' => $request->input('ad_remarks'), 
+                    'ad_approved_by' => $userId, 
+                    'ad_approve_date' => now()
+                ],
             ];
 
             if (isset($roleUpdateMap[$request->role_id])) {
-                $proposal->update($roleUpdateMap[$request->role_id]);
+                // Remove null values to avoid overwriting existing remarks
+                $updateData = array_filter(
+                    $roleUpdateMap[$request->role_id],
+                    fn($value) => $value !== null
+                );
+
+                $proposal->update($updateData);
             }
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Approved Successful',
+                'message' => 'Approval successful',
             ], 200);
 
         } catch (\Exception $e) {
@@ -483,16 +509,13 @@ class Form2Controller extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
-
     }
-    public function reject(Request $request) {
+
+    public function reject(Request $request){
         $request->validate([
             "id" => 'required|integer',
             "role_id" => 'required|integer',
-            "commex_remarks" => 'sometimes',
-            "dean_remarks" => 'sometimes',
-            "asd_remarks" => 'sometimes',
-            "ad_remarks" => 'sometimes',
+            "remark" => 'required|string', // unified remark input
         ]);
 
         try {
@@ -505,11 +528,15 @@ class Form2Controller extends Controller
                 ], 404);
             }
 
+            $userId = auth()->id();
+            $formType = 'form2'; // your table name
+
+            // Determine which flag to reset
             $roleUpdateMap = [
-                1  => ['is_commex' => false, 'commex_remarks' => $request->input('commex_remarks')],
-                9  => ['is_dean' => false, 'dean_remarks' => $request->input('dean_remarks')],
-                10 => ['is_asd' => false, 'asd_remarks' => $request->input('asd_remarks')],
-                11 => ['is_ad' => false, 'ad_remarks' => $request->input('ad_remarks')],
+                1  => ['is_commex' => false],
+                9  => ['is_dean' => false],
+                10 => ['is_asd' => false],
+                11 => ['is_ad' => false],
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
@@ -518,9 +545,18 @@ class Form2Controller extends Controller
                 $proposal->update($updateData);
             }
 
+            // 🔹 Save the remark in the new table
+            FormRemark::create([
+                'form_type' => $formType,
+                'form_id' => $request->id,
+                'event_id' => $proposal->event_id,
+                'user_id' => $userId,
+                'remark' => $request->remark,
+            ]);
+
             return response()->json([
                 'status' => 200,
-                'message' => 'Form Rejected',
+                'message' => 'Form 2 sent for revision',
             ]);
 
         } catch (\Exception $e) {

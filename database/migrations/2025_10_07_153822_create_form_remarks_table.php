@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attachment', function (Blueprint $table) {
+        Schema::create('form_remarks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('event_id');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->string('name');
-            $table->string('file');
-            $table->string('remarks')->nullable();
+            $table->string('form_type');
+            $table->unsignedBigInteger('form_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('remark')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attachment');
+        Schema::dropIfExists('form_remarks');
     }
 };

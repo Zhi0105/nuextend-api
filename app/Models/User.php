@@ -158,4 +158,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function form3ProposalsAdApproved() {
         return $this->hasMany(Form3OutreachProposal::class, 'ad_approved_by');
     }
+
+    public function formremarksuser() {
+        return $this->hasMany(FormRemark::class, 'user_id');
+    }
 }

@@ -119,4 +119,7 @@ class Event extends Model
     public function attachment() {
         return $this->hasMany(Attachment::class, 'event_id');
     }
+    public function form_remarks() {
+        return $this->hasMany(FormRemark::class, 'event_id');
+    }
 }
