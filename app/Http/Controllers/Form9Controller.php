@@ -97,7 +97,10 @@ class Form9Controller extends Controller
 
         $form9 = DB::transaction(function () use ($validated, $id) {
             $form9 = Form9::findOrFail($id);
-            $form9->update($validated);
+            $form9->update(array_merge($validated, [
+                'is_updated' => true,
+                'is_revised' => false,
+            ]));
 
             if (array_key_exists('logicModels', $validated)) {
                 $keepIds = [];
@@ -197,6 +200,8 @@ class Form9Controller extends Controller
                     fn($value) => $value !== null
                 );
 
+                $updateData['is_updated'] = false;
+
                 $proposal->update($updateData);
             }
 
@@ -241,6 +246,7 @@ class Form9Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+            $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

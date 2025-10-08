@@ -16,6 +16,9 @@ return new class extends Migration
 
             $table->text('discussion')->nullable();
 
+            $table->boolean('is_revised')->default(false);
+            $table->boolean('is_updated')->default(false);
+
             $table->boolean('is_commex')->default(false);
             $table->boolean('is_dean')->default(false);
             $table->boolean('is_asd')->default(false);

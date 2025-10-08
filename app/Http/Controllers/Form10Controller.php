@@ -89,7 +89,11 @@ class Form10Controller extends Controller
 
         $form10 = DB::transaction(function () use ($validated, $id) {
             $form10 = Form10::findOrFail($id);
-            $form10->update($validated);
+            $form10->update(array_merge($validated, [
+                'is_updated' => true,
+                'is_revised' => false,
+            ]));
+
 
             if (array_key_exists('oaopb', $validated)) {
                 $keepIds = [];
@@ -184,6 +188,8 @@ class Form10Controller extends Controller
                     fn($value) => $value !== null
                 );
 
+                $updateData['is_updated'] = false;
+
                 $proposal->update($updateData);
             }
 
@@ -228,6 +234,7 @@ class Form10Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+             $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

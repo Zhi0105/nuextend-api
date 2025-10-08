@@ -113,10 +113,13 @@ class Form11Controller extends Controller
             $form = Form11::findOrFail($id);
 
             // update parent
-            $form->update([
+            $form->update(array_merge([
                 'transportation_medium' => $validated['transportation_medium'] ?? $form->transportation_medium,
                 'driver'                => $validated['driver'] ?? $form->driver,
-            ]);
+            ], [
+                'is_updated' => true,
+                'is_revised' => false,
+            ]));
 
             // update child
             if (array_key_exists('travelDetails', $validated)) {
@@ -227,6 +230,8 @@ class Form11Controller extends Controller
                     fn($value) => $value !== null
                 );
 
+                $updateData['is_updated'] = false;
+
                 $proposal->update($updateData);
             }
 
@@ -271,6 +276,7 @@ class Form11Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+            $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

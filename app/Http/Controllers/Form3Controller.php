@@ -154,6 +154,11 @@ class Form3Controller extends Controller
             return DB::transaction(function () use ($request, $id) {
                 $outreach = Form3OutreachProposal::findOrFail($id);
 
+                $outreach->update([
+                    'is_updated' => true,
+                    'is_revised' => false
+                ]);
+
                 // Update main proposal
                 $outreach->update([
                     'description'   => $request->description,
@@ -316,6 +321,8 @@ class Form3Controller extends Controller
                     fn($value) => $value !== null
                 );
 
+                $updateData['is_updated'] = false;
+
                 $proposal->update($updateData);
             }
 
@@ -361,6 +368,8 @@ class Form3Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+            
+            $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

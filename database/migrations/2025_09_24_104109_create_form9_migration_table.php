@@ -25,6 +25,10 @@ return new class extends Migration
             $table->text('dean_remarks')->nullable();
             $table->text('asd_remarks')->nullable();
             $table->text('ad_remarks')->nullable();
+
+            $table->boolean('is_revised')->default(false);
+            $table->boolean('is_updated')->default(false);
+            
              // Idiomatic FK columns
             $table->foreignId('commex_approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('dean_approved_by')->nullable()->constrained('users')->nullOnDelete();

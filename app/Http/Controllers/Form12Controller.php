@@ -86,7 +86,10 @@ class Form12Controller extends Controller
             'new_items.*.resolution' => 'nullable|string',
         ]);
 
-        $form12->update($validated);
+        $form12->update(array_merge($validated, [
+            'is_updated' => true,
+            'is_revised' => false,
+        ]));
 
         // Refresh attendees
         if ($request->has('attendees')) {
@@ -164,6 +167,8 @@ class Form12Controller extends Controller
                     fn($value) => $value !== null
                 );
 
+                $updateData['is_updated'] = false;
+
                 $proposal->update($updateData);
             }
 
@@ -208,6 +213,7 @@ class Form12Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+            $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

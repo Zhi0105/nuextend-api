@@ -251,6 +251,12 @@ class Form1Controller extends Controller
         $proposal = DB::transaction(function () use ($validated, $id) {
             $proposal = Form1ProgramProposal::findOrFail($id);
 
+            $proposal->update([
+                'is_updated' => true,
+                'is_revised' => false
+            ]);
+
+
             // Update only parent columns (avoid tossing arrays into update())
             $proposal->update(Arr::only($validated, [
                 'duration','background','overall_goal','scholarly_connection'
@@ -497,6 +503,8 @@ class Form1Controller extends Controller
                     fn($value) => $value !== null
                 );
 
+                $updateData['is_updated'] = false;
+
                 $proposal->update($updateData);
             }
 
@@ -541,6 +549,7 @@ class Form1Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+            $updateData['is_updated'] = false;
 
             if ($updateData) {
                 $proposal->update($updateData);

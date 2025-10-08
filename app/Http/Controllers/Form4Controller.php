@@ -113,13 +113,16 @@ class Form4Controller extends Controller
         try {
             $form = DB::transaction(function () use ($validated, $id) {
                 $form = Form4::findOrFail($id);
-                $form->update($validated);
+                $form->update(array_merge($validated, [
+                    'is_updated' => true,
+                    'is_revised' => false,
+                ]));
                 return $form;
             });
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Form updated successfully',
+                'message' => 'Form 4 updated successfully',
                 'data' => $form->load([
                     'event',
                     'commexApprover',
@@ -193,6 +196,7 @@ class Form4Controller extends Controller
                     $roleUpdateMap[$request->role_id],
                     fn($value) => $value !== null
                 );
+                $updateData['is_updated'] = false;
 
                 $proposal->update($updateData);
             }
@@ -239,6 +243,7 @@ class Form4Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+            $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

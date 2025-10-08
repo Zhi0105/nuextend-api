@@ -237,7 +237,11 @@ class Form2Controller extends Controller
         try {
             return DB::transaction(function () use ($request, $id) {
                 $proposal = Form2ProjectProposal::findOrFail($id);
-
+                
+                $proposal->update([
+                    'is_updated' => true,
+                    'is_revised' => false
+                ]);
                 // Update main proposal
                 $proposal->update([
                     'event_type_id'     => $request->event_type_id,
@@ -494,6 +498,7 @@ class Form2Controller extends Controller
                     $roleUpdateMap[$request->role_id],
                     fn($value) => $value !== null
                 );
+                $updateData['is_updated'] = false;
 
                 $proposal->update($updateData);
             }
@@ -540,6 +545,8 @@ class Form2Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
+
+            $updateData['is_revised'] = true;
 
             if ($updateData) {
                 $proposal->update($updateData);

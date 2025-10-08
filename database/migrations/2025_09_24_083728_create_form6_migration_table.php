@@ -24,6 +24,9 @@ return new class extends Migration
             $table->string('mobile_number')->nullable();
             $table->string('email')->nullable();
 
+            $table->boolean('is_revised')->default(false);
+            $table->boolean('is_updated')->default(false);
+            
             $table->boolean('is_commex')->default(false);
             $table->boolean('is_dean')->default(false);
             $table->boolean('is_asd')->default(false);
