@@ -14,10 +14,8 @@ class EventMember extends Model
     protected $table = 'event_members';
     protected $fillable = [
         'event_id',
-        'role_id',
-        'firstname',
-        'middlename',
-        'lastname'
+        'user_id',
+        'role'
     ];
 
     protected $dates = ['deleted_at'];
@@ -25,8 +23,8 @@ class EventMember extends Model
     public function Event() {
         return $this->belongsTo(Event::class, 'event_id');
     }
-    public function Role() {
-        return $this->belongsTo(Role::class, 'role_id');
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
 
     }
 }

@@ -162,4 +162,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function formremarksuser() {
         return $this->hasMany(FormRemark::class, 'user_id');
     }
+
+    public function eventmember() {
+        return $this->hasMany(Eventmember::class, 'user_id');
+    }
 }
