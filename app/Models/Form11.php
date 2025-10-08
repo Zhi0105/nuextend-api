@@ -21,6 +21,9 @@ class Form11 extends Model
 
         'commex_approved_by', 'dean_approved_by', 'asd_approved_by', 'ad_approved_by',
         'commex_approve_date', 'dean_approve_date', 'asd_approve_date', 'ad_approve_date',
+
+        'is_updated',
+        'is_revised',
     ];
 
     protected $casts = [
@@ -33,6 +36,9 @@ class Form11 extends Model
         'dean_approve_date' => 'date',
         'asd_approve_date' => 'date',
         'ad_approve_date' => 'date',
+
+        'is_updated'=> 'boolean',
+        'is_revised'=> 'boolean',
     ];
 
 

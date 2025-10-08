@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Form14;
 use App\Models\Form14BudgetSummary;
 use App\Models\Event;
+use App\Models\FormRemark;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 
 class Form14Controller extends Controller
@@ -131,6 +133,19 @@ class Form14Controller extends Controller
             $form14 = Form14::findOrFail($id);
             $user = $request->user();
             $roleId = $user->role_id;
+            $formType = 'form14';
+
+            // Get the activity to access event_id
+            $activity = Activity::find($form14->activities_id);
+            
+            if (!$activity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Activity not found for this report.'
+                ], 404);
+            }
+
+            $eventId = $activity->event_id;
 
             switch ($validated['event_status_id']) {
                 // SUBMIT action
@@ -149,10 +164,15 @@ class Form14Controller extends Controller
 
                 // REVISE action (role 1 = Commex, role 10 = ASD)
                 case 6:
-                    if ($roleId == 1) {
-                        $form14->commex_remarks = $validated['remarks'] ?? null;
-                    } elseif ($roleId == 10) {
-                        $form14->asd_remarks = $validated['remarks'] ?? null;
+                    if ($roleId == 1 || $roleId == 10) {
+                        // Save remark to form_remarks table with event_id from activity
+                        FormRemark::create([
+                            'form_type' => $formType,
+                            'form_id' => $id,
+                            'event_id' => $eventId, // Get from activity
+                            'user_id' => $user->id,
+                            'remark' => $validated['remarks'] ?? null,
+                        ]);
                     } else {
                         return response()->json([
                             'success' => false,
@@ -203,6 +223,5 @@ class Form14Controller extends Controller
             ], 500);
         }
     }
-
 }
 

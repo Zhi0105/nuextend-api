@@ -36,6 +36,10 @@ return new class extends Migration
             $table->boolean('is_dean')->default(false);
             $table->boolean('is_asd')->default(false);
             $table->boolean('is_ad')->default(false);
+
+            $table->boolean('is_revised')->default(false);
+            $table->boolean('is_updated')->default(false);
+            
             $table->text('commex_remarks')->nullable();
             $table->text('dean_remarks')->nullable();
             $table->text('asd_remarks')->nullable();

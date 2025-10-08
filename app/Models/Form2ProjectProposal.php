@@ -30,6 +30,8 @@ class Form2ProjectProposal extends Model
         'dean_remarks',
         'asd_remarks',
         'ad_remarks',
+        'is_updated',
+        'is_revised',
         'commex_approved_by',
         'dean_approved_by',
         'asd_approved_by',

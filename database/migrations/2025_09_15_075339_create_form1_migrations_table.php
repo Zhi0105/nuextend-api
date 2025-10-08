@@ -22,14 +22,14 @@ return new class extends Migration
             $table->text('background')->nullable();
             $table->text('overall_goal')->nullable();
             $table->text('scholarly_connection')->nullable();
+            
+            $table->boolean('is_revised')->default(false);
+            $table->boolean('is_updated')->default(false);
+
             $table->boolean('is_commex')->default(false);
             $table->boolean('is_dean')->default(false);
             $table->boolean('is_asd')->default(false);
             $table->boolean('is_ad')->default(false);
-            $table->text('commex_remarks')->nullable();
-            $table->text('dean_remarks')->nullable();
-            $table->text('asd_remarks')->nullable();
-            $table->text('ad_remarks')->nullable();
              // Idiomatic FK columns
             $table->foreignId('commex_approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('dean_approved_by')->nullable()->constrained('users')->nullOnDelete();

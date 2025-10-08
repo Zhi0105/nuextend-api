@@ -24,8 +24,6 @@ class Form14 extends Model
         'acknowledgements',
         'is_commex',
         'is_asd',
-        'commex_remarks',
-        'asd_remarks',
         'commex_approved_by',
         'asd_approved_by',
         'commex_approve_date',

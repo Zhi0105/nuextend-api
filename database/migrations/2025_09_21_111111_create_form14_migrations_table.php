@@ -30,10 +30,6 @@ return new class extends Migration
             $table->boolean('is_commex')->default(false);
             $table->boolean('is_asd')->default(false);
 
-            // Remarks
-            $table->text('commex_remarks')->nullable();
-            $table->text('asd_remarks')->nullable();
-
             // Approved by (users table foreign keys)
             $table->foreignId('commex_approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('asd_approved_by')->nullable()->constrained('users')->nullOnDelete();
