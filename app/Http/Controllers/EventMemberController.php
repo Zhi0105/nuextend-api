@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\EventMember;
+use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EventMemberController extends Controller
 {
     public function index() {
         try {
-            $eventmembers = EventMember::all();
+            $eventmembers = EventMember::with(['user', 'event'])->get();
 
             return response()->json([
                 'status' => 200,
@@ -18,29 +20,40 @@ class EventMemberController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
     }
+
     public function create(Request $request) {
         $request->validate([
-            'event_id' => 'required',
-            'role_id' => 'required',
-            "firstname" => "required",
-            "middlename" => "required",
-            "lastname" => "required",
+            'event_id' => 'required|exists:events,id',
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|string'
         ]);
 
         try {
+            // Check if member already exists for this event
+            $existingMember = EventMember::where('event_id', $request->event_id)
+                                        ->where('user_id', $request->user_id)
+                                        ->first();
+
+            if($existingMember) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => "User is already a member of this event"
+                ], 409);
+            }
+
             $eventmember = EventMember::create([
                 'event_id' => $request->event_id,
-                'role_id' => $request->role_id,
-                'firstname' => $request->firstname,
-                'middlename' => $request->middlename,
-                "lastname" => $request->lastname,
+                'user_id' => $request->user_id,
+                'role' => $request->role,
             ]);
 
+            // Load relationships for response
+            $eventmember->load(['user', 'event']);
 
             return response()->json([
                 'status' => 201,
@@ -48,20 +61,17 @@ class EventMemberController extends Controller
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
-
     }
+
     public function update(Request $request) {
         $request->validate([
-            "id" => "required",
-            "event_id" => 'sometimes',
-            "role_id" => 'sometimes',
-            "firstname" => "sometimes",
-            "middlename" => "sometimes",
-            "lastname" => "sometimes",
+            "id" => "required|exists:event_members,id",
+            "user_id" => 'sometimes|exists:users,id',
+            "role" => 'sometimes|string',
         ]);
 
         try {
@@ -74,31 +84,45 @@ class EventMemberController extends Controller
                 ], 404);
             }
 
+            // Check for duplicate if user_id is being updated
+            if($request->has('user_id') && $request->user_id != $eventmember->user_id) {
+                $existingMember = EventMember::where('event_id', $eventmember->event_id)
+                                            ->where('user_id', $request->user_id)
+                                            ->first();
+
+                if($existingMember) {
+                    return response()->json([
+                        'status' => 409,
+                        'message' => "User is already a member of this event"
+                    ], 409);
+                }
+            }
+
             $eventmember->update($request->only([
-                'event_id',
-                'role_id',
-                'firstname',
-                'middlename',
-                'lastname',
+                'user_id',
+                'role',
             ]));
+
+            // Reload relationships
+            $eventmember->load(['user', 'event']);
 
             return response()->json([
                 'status' => 200,
-                "message" => "Event members successfully updated"
+                "data" => $eventmember,
+                "message" => "Event member successfully updated"
             ], 200);
-
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
-
     }
+
     public function delete(Request $request) {
         $request->validate([
-            "id" => "required",
+            "id" => "required|exists:event_members,id",
         ]);
 
         try {
@@ -111,19 +135,18 @@ class EventMemberController extends Controller
                 ], 404);
             }
 
-            EventMember::where('id', $request->id)->delete();
+            $eventmember->delete();
 
             return response()->json([
                 'status' => 200,
-                "message" => "Event members successfully remove"
+                "message" => "Event member successfully removed"
             ], 200);
-
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' =>  $e->getCode(),
+                'status' => 500,
                 'message' => $e->getMessage(),
-            ],  $e->getCode());
+            ], 500);
         }
     }
 }
