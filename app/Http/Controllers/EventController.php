@@ -146,6 +146,7 @@ class EventController extends Controller
             "description" => 'sometimes',
             "target_group" => 'sometimes',
             "term" => "required|string",
+            "implement_date" => "sometimes|date",  //eto yung date haha
             "budget_proposal" => "sometimes",
             'skills' => 'array',
             'skills.*' => 'integer|exists:skills,id',
@@ -175,6 +176,7 @@ class EventController extends Controller
                 'description' => $request->description,
                 'target_group' => $request->target_group,
                 'term' => $request->term,
+                'implement_date' => $request->implement_date, //eto din haha
                 'budget_proposal' => $request->budget_proposal
             ]);
 
@@ -226,6 +228,7 @@ class EventController extends Controller
             "description"=> "sometimes|nullable|string",
             "target_group" => "sometimes|nullable|string",
             "term" => "sometimes|string",
+            "implement_date" => "sometimes|nullable|date", 
             "budget_proposal" => "sometimes|nullable",
 
             // Relations
@@ -265,6 +268,7 @@ class EventController extends Controller
                     'description',
                     'target_group',
                     'term',
+                    'implement_date',
                     'budget_proposal',
                 ])->toArray());
 

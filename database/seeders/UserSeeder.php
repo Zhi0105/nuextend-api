@@ -132,5 +132,17 @@ class UserSeeder extends Seeder
             'contact' => '09999999999',
             'esign' => $getEsign('deanshs_esign.png'),
         ]);
+
+        User::create([
+            'role_id' => 12,
+            'firstname' => 'rufino',
+            'middlename' => 'c',
+            'lastname' => 'oliva',
+            'email' => 'ed@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('ed123'),
+            'contact' => '09999999999',
+            'esign' => $getEsign('ed_esign.png'),
+        ]);
     }
 }
