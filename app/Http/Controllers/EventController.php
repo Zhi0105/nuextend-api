@@ -29,6 +29,7 @@ class EventController extends Controller
                 'user.program',
                 'eventtype',
                 'eventmember',
+                'eventmember.user',
                 'model',
                 'organization',
                 'skills',
@@ -231,7 +232,7 @@ class EventController extends Controller
             "location"=> "sometimes|nullable|string",
             "target_group" => "sometimes|nullable|string",
             "term" => "sometimes|string",
-            "implement_date" => "sometimes|nullable|date", 
+            "implement_date" => "sometimes|nullable|date",
             "budget_proposal" => "sometimes|nullable",
 
             // Relations
@@ -413,6 +414,7 @@ class EventController extends Controller
                 'user.role',
                 'eventtype',
                 'eventmember',
+                'eventmember.user',
                 'model',
                 'organization',
                 'participants.user',
