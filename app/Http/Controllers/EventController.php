@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Event;
+use App\Models\EventMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,7 @@ class EventController extends Controller
                 'user.role',
                 'user.program',
                 'eventtype',
+                'eventmember',
                 'model',
                 'organization',
                 'skills',
@@ -118,7 +120,7 @@ class EventController extends Controller
                 'form12.deanApprover',
                 'form12.asdApprover',
                 'form12.adApprover',
-                
+
             ])->get();
 
             return response()->json([
@@ -155,6 +157,9 @@ class EventController extends Controller
             'activities.*.address' => 'required|string',
             'activities.*.start_date' => 'required|string',
             'activities.*.end_date' => 'required|string',
+            'members' => 'array',
+            'members.*.user_id' => 'required',
+            'members.*.role' => 'required|string',
 
         ]);
 
@@ -184,6 +189,14 @@ class EventController extends Controller
                 ]);
             }
 
+            foreach ($request->members as $member) {
+                EventMember::create([
+                    'event_id' => $event->id,
+                    'user_id' => $member['user_id'],
+                    'role' => $member['role']
+                ]);
+            }
+
             $event->skills()->sync($request->skills);
             $event->unsdgs()->sync($request->unsdgs);
 
@@ -200,7 +213,6 @@ class EventController extends Controller
 
     }
     public function update(Request $request) {
-        // Validate first
         $validated = $request->validate([
             "id" => "required|integer|exists:events,id",
 
@@ -222,28 +234,27 @@ class EventController extends Controller
             "unsdgs" => "sometimes|array",
             "unsdgs.*" => "integer|exists:unsdgs,id",
 
-            // Nested activities (full upsert set)
+            // Nested activities
             "activities" => "sometimes|array",
-            "activities.*.id" => "sometimes|integer|exists:activities,id", // present = update, absent = create
+            "activities.*.id" => "sometimes|integer|exists:activities,id",
             "activities.*.name" => "required_with:activities|string",
             "activities.*.description" => "required_with:activities|string",
             "activities.*.address" => "required_with:activities|string",
             "activities.*.start_date" => "required_with:activities|string",
             "activities.*.end_date" => "required_with:activities|string",
+
+            // Members array
+            "members" => "sometimes|array",
+            "members.*.id" => "sometimes|integer|exists:event_members,id",
+            "members.*.user_id" => "required_with:members|integer|exists:users,id",
+            "members.*.role" => "required_with:members|string",
         ]);
 
         try {
             return DB::transaction(function () use ($validated) {
+                $event = Event::findOrFail($validated['id']);
 
-                $event = Event::find($validated['id']);
-                if (!$event) {
-                    return response()->json([
-                        'status' => 404,
-                        'message' => 'No event found',
-                    ], 404);
-                }
-
-                // Update event core fields (only those present)
+                // ✅ Update event main info
                 $event->update(collect($validated)->only([
                     'user_id',
                     'organization_id',
@@ -257,14 +268,11 @@ class EventController extends Controller
                     'budget_proposal',
                 ])->toArray());
 
-                // Upsert activities if provided
+                // ✅ Upsert activities
                 $keptActivityIds = [];
-
                 if (isset($validated['activities'])) {
                     foreach ($validated['activities'] as $activityData) {
-
-                        // Attach event_id always
-                        $activityPayload = [
+                        $payload = [
                             'event_id' => $event->id,
                             'name' => $activityData['name'],
                             'address' => $activityData['address'],
@@ -274,27 +282,45 @@ class EventController extends Controller
                         ];
 
                         if (!empty($activityData['id'])) {
-                            // Update existing (ensure it belongs to this event)
                             $activity = Activity::where('id', $activityData['id'])
                                 ->where('event_id', $event->id)
                                 ->firstOrFail();
-
-                            $activity->update($activityPayload);
+                            $activity->update($payload);
                             $keptActivityIds[] = $activity->id;
                         } else {
-                            // Create new
-                            $new = Activity::create($activityPayload);
+                            $new = Activity::create($payload);
                             $keptActivityIds[] = $new->id;
                         }
                     }
-
-                    // Delete activities removed from payload
-                    $event->activities()
-                        ->whereNotIn('id', $keptActivityIds)
-                        ->delete();
+                    $event->activities()->whereNotIn('id', $keptActivityIds)->delete();
                 }
 
-                // Sync pivot relations if provided (leave as-is if not sent)
+                // ✅ Upsert members (new part)
+                if (isset($validated['members'])) {
+                    $keptMemberIds = [];
+                    foreach ($validated['members'] as $memberData) {
+                        $memberPayload = [
+                            'event_id' => $event->id,
+                            'user_id' => $memberData['user_id'],
+                            'role' => $memberData['role'],
+                        ];
+
+                        if (!empty($memberData['id'])) {
+                            $member = EventMember::where('id', $memberData['id'])
+                                ->where('event_id', $event->id)
+                                ->firstOrFail();
+                            $member->update($memberPayload);
+                            $keptMemberIds[] = $member->id;
+                        } else {
+                            $newMember = EventMember::create($memberPayload);
+                            $keptMemberIds[] = $newMember->id;
+                        }
+                    }
+                    // Delete members not in payload
+                    $event->eventmember()->whereNotIn('id', $keptMemberIds)->delete();
+                }
+
+                // ✅ Sync relations
                 if (array_key_exists('skills', $validated)) {
                     $event->skills()->sync($validated['skills'] ?? []);
                 }
@@ -302,12 +328,8 @@ class EventController extends Controller
                     $event->unsdgs()->sync($validated['unsdgs'] ?? []);
                 }
 
-                // Optionally enforce a status reset similar to your old code
-                // If you always want to reset to Draft/Pending (1) on any update:
-                // $event->update(['event_status_id' => 1]);
-
-                // Return the fresh model with relations
-                $event->load(['activities', 'skills', 'unsdgs']);
+                // Load relations for response
+                $event->load(['activities', 'skills', 'unsdgs', 'eventmember']);
 
                 return response()->json([
                     'status' => 200,
@@ -315,9 +337,6 @@ class EventController extends Controller
                     'data' => $event
                 ], 200);
             });
-        } catch (\Illuminate\Validation\ValidationException $ve) {
-            // Will be auto-handled by Laravel; included here if you want custom response
-            throw $ve;
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -385,6 +404,7 @@ class EventController extends Controller
                 'user.program',
                 'user.role',
                 'eventtype',
+                'eventmember',
                 'model',
                 'organization',
                 'participants.user',
