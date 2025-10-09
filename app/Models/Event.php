@@ -23,6 +23,7 @@ class Event extends Model
         'budget_proposal',
         'description',
         'is_posted',
+        'implement_date',
     ];
 
 
