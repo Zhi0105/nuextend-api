@@ -40,6 +40,7 @@ class Form2ProjectProposal extends Model
         'dean_approve_date',
         'asd_approve_date',
         'ad_approve_date'
+        
     ];
 
     // If you’ll store a real date in implementationDate, you can cast:
