@@ -187,6 +187,7 @@ class Form7Controller extends Controller
                     fn($value) => $value !== null
                 );
                 $updateData['is_updated'] = false;
+                $updateData['is_revised'] = false;
 
                 $proposal->update($updateData);
             }
@@ -233,6 +234,7 @@ class Form7Controller extends Controller
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
             $updateData['is_revised'] = true;
+            $updateData['is_updated'] = false;
 
             if ($updateData) {
                 $proposal->update($updateData);
