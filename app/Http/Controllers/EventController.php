@@ -660,7 +660,8 @@ class EventController extends Controller
             }
 
             $event->update([
-                'is_posted' => true
+                'is_posted' => true,
+                'event_status_id' => 10 
             ]);
 
             return response()->json([
