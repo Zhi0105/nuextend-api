@@ -189,6 +189,7 @@ class Form10Controller extends Controller
                 );
 
                 $updateData['is_updated'] = false;
+                $updateData['is_revised'] = false;
 
                 $proposal->update($updateData);
             }
@@ -235,6 +236,7 @@ class Form10Controller extends Controller
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
              $updateData['is_revised'] = true;
+             $updateData['is_updated'] = false;
 
             if ($updateData) {
                 $proposal->update($updateData);
