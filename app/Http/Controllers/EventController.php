@@ -30,11 +30,13 @@ class EventController extends Controller
                 'eventtype',
                 'eventmember',
                 'eventmember.user',
+                'eventmember.user.department',
                 'model',
                 'organization',
                 'skills',
                 'unsdgs',
                 'participants.user',
+                'participants.user.department',
                 'participants.attendance',
                 'participants.event',
                 'form1',
@@ -415,9 +417,11 @@ class EventController extends Controller
                 'eventtype',
                 'eventmember',
                 'eventmember.user',
+                'eventmember.user.department',
                 'model',
                 'organization',
                 'participants.user',
+                'participants.user.department',
                 'participants.attendance',
                 'participants.event',
                 'form1',
@@ -661,7 +665,7 @@ class EventController extends Controller
 
             $event->update([
                 'is_posted' => true,
-                'event_status_id' => 10 
+                'event_status_id' => 10
             ]);
 
             return response()->json([
