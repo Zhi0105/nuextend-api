@@ -145,6 +145,7 @@ class EventController extends Controller
             "event_status_id" => 'sometimes',
             "name" => 'sometimes',
             "description" => 'sometimes',
+            "location" => 'sometimes',
             "target_group" => 'sometimes',
             "term" => "required|string",
             "implement_date" => "sometimes|date",  //eto yung date haha
@@ -174,6 +175,7 @@ class EventController extends Controller
                 'event_type_id' => $request->event_type_id,
                 'event_status_id' => 1,
                 'name' => $request->name,
+                'location' => $request->location,
                 'description' => $request->description,
                 'target_group' => $request->target_group,
                 'term' => $request->term,
@@ -227,6 +229,7 @@ class EventController extends Controller
             "event_status_id" => "sometimes|integer|exists:event_statuses,id",
             "name" => "sometimes|nullable|string",
             "description"=> "sometimes|nullable|string",
+            "location"=> "sometimes|nullable|string",
             "target_group" => "sometimes|nullable|string",
             "term" => "sometimes|string",
             "implement_date" => "sometimes|nullable|date",
@@ -267,6 +270,7 @@ class EventController extends Controller
                     'event_status_id',
                     'name',
                     'description',
+                    'location',
                     'target_group',
                     'term',
                     'implement_date',
@@ -656,7 +660,8 @@ class EventController extends Controller
             }
 
             $event->update([
-                'is_posted' => true
+                'is_posted' => true,
+                'event_status_id' => 10 
             ]);
 
             return response()->json([

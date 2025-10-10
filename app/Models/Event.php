@@ -24,6 +24,7 @@ class Event extends Model
         'description',
         'is_posted',
         'implement_date',
+        'location',
     ];
 
 

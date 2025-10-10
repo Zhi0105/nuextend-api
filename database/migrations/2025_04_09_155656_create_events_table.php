@@ -22,6 +22,7 @@ return new class extends Migration
             $table->bigInteger('budget_proposal')->nullable();
             // $table->string('program_model_name')->nullable();
             $table->string('term');
+            $table->string('location');
             $table->date('implement_date')->nullable(); 
             $table->text('description')->nullable(); // Optional, remove nullable() if required
 
