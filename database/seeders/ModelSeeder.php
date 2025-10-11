@@ -16,6 +16,6 @@ class ModelSeeder extends Seeder
         Moddel::create([ 'name' => 'Outreach Project' ]);
         Moddel::create([ 'name' => 'Project' ]);
         Moddel::create([ 'name' => 'Program' ]);
+        Moddel::create([ 'name' => 'Emergency' ]);
     }
 }
-

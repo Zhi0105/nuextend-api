@@ -175,14 +175,15 @@ class EventController extends Controller
                 'organization_id' => $request->organization_id,
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
-                'event_status_id' => 1,
+                'event_status_id' => $request->model_id == 4 ? 10 : 1,
                 'name' => $request->name,
                 'location' => $request->location,
                 'description' => $request->description,
                 'target_group' => $request->target_group,
                 'term' => $request->term,
                 'implement_date' => $request->implement_date, //eto din haha
-                'budget_proposal' => $request->budget_proposal
+                'budget_proposal' => $request->budget_proposal,
+                'is_posted' => $request->model_id == 4 ? 1 : 0
             ]);
 
             foreach ($request->activities as $activity) {
