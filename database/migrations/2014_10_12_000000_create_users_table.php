@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('contact');
             $table->boolean('status')->default(false);
             $table->boolean('is_EsVolunteer')->default(false);
-            $table->binary('esign')->nullable(); // will be changed to MEDIUMBLOB
+            $table->binary('esign')->nullable();
+            $table->boolean('is_officer')->default(false); // will be changed to MEDIUMBLOB
             $table->rememberToken();
             $table->timestamps();
         });
