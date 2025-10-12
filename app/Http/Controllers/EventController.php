@@ -16,6 +16,7 @@ class EventController extends Controller
             $events = Event::with('skills')->with([
                 'forms',
                 'form_remarks.user',
+                'announcement',
                 'activity.progress_report',
                 'activity.form14',
                 'activity.form14.budgetSummaries',
@@ -404,6 +405,7 @@ class EventController extends Controller
             ->with([
                 'skills',
                 'form_remarks.user',
+                'announcement',
                 'activity.progress_report',
                 'activity.form14',
                 'activity.form14.budgetSummaries',
