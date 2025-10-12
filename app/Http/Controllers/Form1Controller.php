@@ -48,9 +48,6 @@ class Form1Controller extends Controller
             'overall_goal'          => 'sometimes|string|nullable',
             'scholarly_connection'  => 'sometimes|string|nullable',
 
-            // arrays of strings (proposal-level)
-            'programTeamMembers'    => 'sometimes|array',
-            'programTeamMembers.*'  => 'string|max:255',
             'cooperatingAgencies'   => 'sometimes|array',
             'cooperatingAgencies.*' => 'string|max:255',
 
@@ -86,17 +83,6 @@ class Form1Controller extends Controller
                 'overall_goal'         => $validated['overall_goal'] ?? null,
                 'scholarly_connection' => $validated['scholarly_connection'] ?? null,
             ]);
-
-            // 2) Proposal-level team members
-            if (!empty($validated['programTeamMembers'])) {
-                    $proposal->teamMembers()->createMany(
-                        collect($validated['programTeamMembers'])
-                            ->filter(fn ($n) => filled($n)) // <— drop "", null
-                            ->map(fn ($n) => ['name' => $n])
-                            ->values()
-                            ->all()
-                    );
-                }
 
             // 3) Cooperating agencies
             if (!empty($validated['cooperatingAgencies'])) {
@@ -178,7 +164,6 @@ class Form1Controller extends Controller
         return response()->json([
             'message' => 'Program proposal created',
             'data' => $proposal->load([
-                'teamMembers',
                 'cooperatingAgencies',
                 'componentProjects',
                 'projects',
@@ -198,14 +183,6 @@ class Form1Controller extends Controller
             'background'            => 'sometimes|string|nullable',
             'overall_goal'          => 'sometimes|string|nullable',
             'scholarly_connection'  => 'sometimes|string|nullable',
-
-            // ---- Proposal-level team members (strings OR {id,name,_delete}) ----
-            'programTeamMembers'                => 'sometimes|array',
-            'programTeamMembers.*'              => 'nullable',
-            'programTeamMembers.*.id'           => 'sometimes|integer|exists:form1_program_team_members,id',
-            'programTeamMembers.*.name'         => 'sometimes|string|max:255|nullable',
-            'programTeamMembers.*._delete'      => 'sometimes|boolean',
-
             // ---- Cooperating agencies (strings OR {id,name,_delete}) ----
             'cooperatingAgencies'               => 'sometimes|array',
             'cooperatingAgencies.*'             => 'nullable',
@@ -261,30 +238,6 @@ class Form1Controller extends Controller
             $proposal->update(Arr::only($validated, [
                 'duration','background','overall_goal','scholarly_connection'
             ]));
-
-            // ---- PROGRAM TEAM MEMBERS ----
-            if (array_key_exists('programTeamMembers', $validated)) {
-                $keepIds = [];
-                foreach ($validated['programTeamMembers'] as $row) {
-                    if (is_string($row)) $row = ['name' => $row];
-
-                    if (!empty($row['_delete']) && !empty($row['id'])) {
-                        $proposal->teamMembers()->whereKey($row['id'])->delete();
-                        continue;
-                    }
-
-                    $payload = ['name' => $row['name'] ?? null];
-
-                    if (!empty($row['id'])) {
-                        $proposal->teamMembers()->whereKey($row['id'])->update($payload);
-                        $keepIds[] = $row['id'];
-                    } else {
-                        $new = $proposal->teamMembers()->create($payload);
-                        $keepIds[] = $new->id;
-                    }
-                }
-                $proposal->teamMembers()->whereNotIn('id', $keepIds ?: [0])->delete();
-            }
 
             // ---- COOPERATING AGENCIES ----
             if (array_key_exists('cooperatingAgencies', $validated)) {
@@ -433,7 +386,6 @@ class Form1Controller extends Controller
         return response()->json([
             'message' => 'Program proposal updated',
             'data' => $proposal->load([
-                'teamMembers',
                 'cooperatingAgencies',
                 'componentProjects',
                 'projects',

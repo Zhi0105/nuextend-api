@@ -32,8 +32,32 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
+            'role_id' => 4,
+            'firstname' => 'faculty',
+            'middlename' => 'f',
+            'lastname' => 'faculty',
+            'email' => 'faculty@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('faculty123'),
+            'contact' => '09111111111',
+        ]);
+
+        User::create([
+            'role_id' => 3,
+            'department_id' => 2,
+            'firstname' => 'student',
+            'middlename' => 's',
+            'lastname' => 'student',
+            'email' => 'student@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('student123'),
+            'contact' => '09111111111',
+        ]);
+
+
+        User::create([
             'role_id' => 10,
-            'firstname' => 'bon kervin',
+            'firstname' => 'bon kerwin',
             'middlename' => 'd',
             'lastname' => 'venturina',
             'email' => 'asd@nu-baliwag.edu.ph',

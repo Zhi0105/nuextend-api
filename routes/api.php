@@ -82,9 +82,10 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
+        
             Route::get('/terms', [DashboardController::class, 'getTerms']);
             Route::post('/dashboard', [DashboardController::class, 'index']);
-
+            Route::post('/user-update', [UserController::class, 'update_user_details']);
 
         // FORM UPLOADING START
             Route::get('/form/{id}', [FormController::class, 'index']);
