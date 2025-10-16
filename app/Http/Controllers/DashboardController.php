@@ -46,6 +46,8 @@ class DashboardController extends Controller {
                 'eventmember',
                 'unsdgs',
                 'participants',
+                'participants.user',
+                'participants.user.department',
                 'forms',
                 'activity',
                 'activity.form14',
