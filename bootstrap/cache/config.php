@@ -200,8 +200,8 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\framework/cache/data',
-        'lock_path' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\framework/cache/data',
+        'path' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\framework/cache/data',
+        'lock_path' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -376,13 +376,13 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\app',
+        'root' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\app',
         'throw' => false,
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\app/public',
+        'root' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
         'throw' => false,
@@ -402,7 +402,7 @@
     ),
     'links' => 
     array (
-      'C:\\Users\\Hazel Fabian\\nuextend-api\\public\\storage' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\app/public',
+      'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\public\\storage' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -445,7 +445,7 @@
           'format_to_use_for_docs' => 'json',
           'annotations' => 
           array (
-            0 => 'C:\\Users\\Hazel Fabian\\nuextend-api\\app',
+            0 => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\app',
           ),
         ),
       ),
@@ -477,8 +477,8 @@
       ),
       'paths' => 
       array (
-        'docs' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\api-docs',
-        'views' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\resources/views/vendor/l5-swagger',
+        'docs' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\api-docs',
+        'views' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\resources/views/vendor/l5-swagger',
         'base' => '/api/v1',
         'excludes' => 
         array (
@@ -563,14 +563,14 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\logs/laravel.log',
+        'path' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\logs/laravel.log',
         'level' => 'debug',
         'replace_placeholders' => true,
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\logs/laravel.log',
+        'path' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
         'replace_placeholders' => true,
@@ -635,7 +635,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\logs/laravel.log',
+        'path' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -711,7 +711,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'C:\\Users\\Hazel Fabian\\nuextend-api\\resources\\views/vendor/mail',
+        0 => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -824,7 +824,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\framework/sessions',
+    'files' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -845,9 +845,9 @@
   array (
     'paths' => 
     array (
-      0 => 'C:\\Users\\Hazel Fabian\\nuextend-api\\resources\\views',
+      0 => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\resources\\views',
     ),
-    'compiled' => 'C:\\Users\\Hazel Fabian\\nuextend-api\\storage\\framework\\views',
+    'compiled' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend\\storage\\framework\\views',
   ),
   'flare' => 
   array (
@@ -933,7 +933,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => 'C:\\Users\\Hazel Fabian\\nuextend-api',
+    'remote_sites_path' => 'C:\\Users\\Argie Barcena\\OneDrive\\Desktop\\NUExtend Project\\nu-extend',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',

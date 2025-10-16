@@ -156,7 +156,7 @@ class ParticipantController extends Controller
         try {
             $attendanceLog = Attendance::updateOrCreate([
                 'participant_id' => $request->participant_id,
-                'attendance_date' => now(),
+                'attendance_date' => now()->addDay(), // add 1 day
             ], [
                 'is_attended' => true
             ]);
