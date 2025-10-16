@@ -32,30 +32,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'role_id' => 4,
-            'firstname' => 'faculty',
-            'middlename' => 'f',
-            'lastname' => 'faculty',
-            'email' => 'faculty@nu-baliwag.edu.ph',
-            'email_verified_at' => now(),
-            'password' => bcrypt('faculty123'),
-            'contact' => '09111111111',
-        ]);
-
-        User::create([
-            'role_id' => 3,
-            'department_id' => 2,
-            'firstname' => 'student',
-            'middlename' => 's',
-            'lastname' => 'student',
-            'email' => 'student@nu-baliwag.edu.ph',
-            'email_verified_at' => now(),
-            'password' => bcrypt('student123'),
-            'contact' => '09111111111',
-        ]);
-
-
-        User::create([
             'role_id' => 10,
             'firstname' => 'bon kerwin',
             'middlename' => 'd',
@@ -69,7 +45,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'role_id' => 11,
-            'firstname' => 'jayson raymond',
+            'firstname' => 'jayson raymund',
             'middlename' => 'd',
             'lastname' => 'bermudez',
             'email' => 'ad@nu-baliwag.edu.ph',
@@ -167,6 +143,30 @@ class UserSeeder extends Seeder
             'password' => bcrypt('ed123'),
             'contact' => '09999999999',
             'esign' => $getEsign('ed_esign.png'),
+        ]);
+
+                User::create([
+            'role_id' => 4,
+            'department_id' => 3,
+            'firstname' => 'faculty',
+            'middlename' => 'f',
+            'lastname' => 'faculty',
+            'email' => 'faculty@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('faculty123'),
+            'contact' => '09111111111',
+        ]);
+
+        User::create([
+            'role_id' => 3,
+            'department_id' => 3,
+            'firstname' => 'student',
+            'middlename' => 's',
+            'lastname' => 'student',
+            'email' => 'student@nu-baliwag.edu.ph',
+            'email_verified_at' => now(),
+            'password' => bcrypt('student123'),
+            'contact' => '09111111111',
         ]);
     }
 }

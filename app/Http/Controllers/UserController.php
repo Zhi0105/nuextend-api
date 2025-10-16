@@ -61,64 +61,94 @@ class UserController extends Controller{
             ],  $e->getCode());
         }
     }
-    public function update_user_details(Request $request) {
+    
+    public function update_user_details(Request $request){
+            $validated = $request->validate([
+                'user' => 'required|integer|exists:users,id',
+                'file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
+            ]);
+
+            try {
+                $user = User::findOrFail($validated['user']);
+
+                if ($request->hasFile('file')) {
+                    $binaryData = file_get_contents($request->file('file')->getRealPath());
+                    $user->esign = $binaryData;
+                    $user->save();
+                }
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'User e-signature updated successfully.',
+                ], 200);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'An error occurred while updating the user e-signature.',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        }
+
+    public function assign_officer_role(Request $request)
+    {
         $validated = $request->validate([
-            'user' => 'required|integer|exists:users,id',
-            'department' => 'nullable|integer|exists:departments,id',
-            'program' => 'nullable|integer|exists:programs,id',
-            'file' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
-            'skills' => 'nullable|array', 
-            'skills.*' => 'integer|exists:skills,id',
-            "officer" => 'nullable|integer',
-            "role" => 'nullable|integer'
+            'officer_user_id' => 'required|integer|exists:users,id',
+            'role_id' => 'required|integer|exists:roles,id', // Assuming you have a roles table
         ]);
 
         try {
-            $user = User::findOrFail($validated['user']);
+            $officer = User::findOrFail($validated['officer_user_id']);
 
-            $updateData = [];
-
-            if (!empty($validated['department'])) {
-                $updateData['department_id'] = $validated['department'];
-            }
-
-            if (!empty($validated['program'])) {
-                $updateData['program_id'] = $validated['program'];
-            }
-            
-            if (!empty($updateData)) {
-                $user->update($updateData);
-            }
-
-            if (!empty($validated['officer']) && !empty($validated['role'])) {
-                $officer = User::findOrFail($validated['officer']);
-                $officer->update([
-                    'role_id' => $validated['role'],
-                    'is_officer' => true
-                ]);
-            }
-
-            
-            // ✅ Update and sync skills
-            if (array_key_exists('skills', $validated)) {
-                $user->skill()->sync($validated['skills']);
-            }
-
-            if ($request->hasFile('file')) {
-                $binaryData = file_get_contents($request->file('file')->getRealPath());
-                $user->esign = $binaryData;
-                $user->save();
-            }
+            $officer->update([
+                'role_id' => $validated['role_id'],
+                'is_officer' => true
+            ]);
 
             return response()->json([
                 'status' => 200,
-                'message' => 'User updated successfully.',
+                'message' => 'Officer role assigned successfully.',
+                'officer' => [
+                    'id' => $officer->id,
+                    'name' => $officer->name, // Assuming you have name field
+                    'role_id' => $officer->role_id,
+                    'is_officer' => $officer->is_officer
+                ]
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
-                'message' => 'An error occurred while updating the user.',
+                'message' => 'An error occurred while assigning officer role.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function remove_officer_role(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+        ]);
+
+        try {
+            $user = User::findOrFail($validated['user_id']);
+
+            $user->update([
+                'is_officer' => false,
+                'role_id' => 4
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Officer role removed successfully.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'An error occurred while removing officer role.',
                 'error' => $e->getMessage()
             ], 500);
         }
