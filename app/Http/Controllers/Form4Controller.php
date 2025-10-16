@@ -167,7 +167,8 @@ class Form4Controller extends Controller
                 1  => [
                     'is_commex' => true, 
                     'commex_remarks' => $request->input('commex_remarks'), 
-                    'commex_approved_by' => $userId, 
+                    'commex_approved_by' => $userId,
+                    'is_approved' => true,
                     'commex_approve_date' => now()
                 ],
                 9  => [
@@ -185,7 +186,7 @@ class Form4Controller extends Controller
                 11 => [
                     'is_ad' => true, 
                     'ad_remarks' => $request->input('ad_remarks'), 
-                    'ad_approved_by' => $userId, 
+                    'ad_approved_by' => $userId,
                     'ad_approve_date' => now()
                 ],
             ];

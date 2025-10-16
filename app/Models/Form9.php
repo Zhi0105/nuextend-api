@@ -24,6 +24,7 @@ class Form9 extends Model
 
         'is_updated',
         'is_revised',
+        'is_approved',
     ];
 
     protected $casts = [
@@ -39,6 +40,7 @@ class Form9 extends Model
 
         'is_updated'=> 'boolean',
         'is_revised'=> 'boolean',
+        'is_approved'=> 'boolean',
     ];
 
 

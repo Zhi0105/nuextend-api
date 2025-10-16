@@ -34,6 +34,7 @@ return new class extends Migration
 
             $table->boolean('is_revised')->default(false);
             $table->boolean('is_updated')->default(false);
+            $table->boolean('is_approved')->default(false);
 
             $table->boolean('is_commex')->default(false);
             $table->boolean('is_dean')->default(false);

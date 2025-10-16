@@ -21,6 +21,7 @@ class Form3OutreachProposal extends Model
         'is_ad',
         'is_updated',
         'is_revised',
+        'is_approved',
         'commex_approved_by',
         'dean_approved_by',
         'asd_approved_by',

@@ -212,13 +212,15 @@ class Form11Controller extends Controller
                 10 => [
                     'is_asd' => true, 
                     'asd_remarks' => $request->input('asd_remarks'), 
-                    'asd_approved_by' => $userId, 
+                    'asd_approved_by' => $userId,
+                    'is_approved' => true, 
                     'asd_approve_date' => now()
                 ],
                 11 => [
                     'is_ad' => true, 
                     'ad_remarks' => $request->input('ad_remarks'), 
-                    'ad_approved_by' => $userId, 
+                    'ad_approved_by' => $userId,
+                    'is_approved' => true, 
                     'ad_approve_date' => now()
                 ],
             ];

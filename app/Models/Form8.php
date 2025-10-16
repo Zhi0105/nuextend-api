@@ -26,6 +26,7 @@ class Form8 extends Model
 
         'is_updated',
         'is_revised',
+        'is_approved',
     ];
 
     protected $casts = [
@@ -41,6 +42,7 @@ class Form8 extends Model
 
         'is_updated'=> 'boolean',
         'is_revised'=> 'boolean',
+        'is_approved'=> 'boolean',
     ];
 
     // Relationship: One Form8 has many references

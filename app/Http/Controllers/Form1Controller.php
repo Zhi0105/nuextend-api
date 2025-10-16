@@ -444,6 +444,7 @@ class Form1Controller extends Controller
                     'is_ad' => true, 
                     'ad_remarks' => $request->input('ad_remarks'), 
                     'ad_approved_by' => $userId, 
+                    'is_approved' => true, 
                     'ad_approve_date' => now()
                 ],
             ];
