@@ -32,6 +32,8 @@ class Form7 extends Model
 
         'is_updated',
         'is_revised',
+        'is_approved',
+        
     ];
 
     protected $casts = [
@@ -46,6 +48,7 @@ class Form7 extends Model
         'ad_approve_date' => 'date',
         'is_updated'=> 'boolean',
         'is_revised'=> 'boolean',
+        'is_approved'=> 'boolean',
     ];
 
       public function event() {

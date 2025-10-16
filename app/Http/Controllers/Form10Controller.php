@@ -176,7 +176,8 @@ class Form10Controller extends Controller
                 11 => [
                     'is_ad' => true, 
                     'ad_remarks' => $request->input('ad_remarks'), 
-                    'ad_approved_by' => $userId, 
+                    'ad_approved_by' => $userId,
+                    'is_approved' => true, 
                     'ad_approve_date' => now()
                 ],
             ];
@@ -235,8 +236,8 @@ class Form10Controller extends Controller
             ];
 
             $updateData = $roleUpdateMap[$request->role_id] ?? null;
-             $updateData['is_revised'] = true;
-             $updateData['is_updated'] = false;
+            $updateData['is_revised'] = true;
+            $updateData['is_updated'] = false;
 
             if ($updateData) {
                 $proposal->update($updateData);

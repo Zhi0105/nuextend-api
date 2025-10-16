@@ -299,7 +299,7 @@ class Form3Controller extends Controller
                 ],
                 9  => [
                     'is_dean' => true, 
-                    'dean_approved_by' => $userId, 
+                    'dean_approved_by' => $userId,
                     'dean_approve_date' => now()
                 ],
                 10 => [
@@ -310,6 +310,7 @@ class Form3Controller extends Controller
                 11 => [
                     'is_ad' => true, 
                     'ad_approved_by' => $userId, 
+                    'is_approved' => true,
                     'ad_approve_date' => now()
                 ],
             ];

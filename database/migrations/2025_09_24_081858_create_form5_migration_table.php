@@ -39,6 +39,7 @@ return new class extends Migration
 
             $table->boolean('is_revised')->default(false);
             $table->boolean('is_updated')->default(false);
+            $table->boolean('is_approved')->default(false);
             
             $table->text('commex_remarks')->nullable();
             $table->text('dean_remarks')->nullable();

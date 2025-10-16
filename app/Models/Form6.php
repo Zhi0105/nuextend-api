@@ -31,6 +31,7 @@ class Form6 extends Model
         'commex_approve_date', 'dean_approve_date', 'asd_approve_date', 'ad_approve_date',
         'is_updated',
         'is_revised',
+        'is_approved',
     ];
 
     protected $casts = [
@@ -46,6 +47,7 @@ class Form6 extends Model
 
         'is_updated'=> 'boolean',
         'is_revised'=> 'boolean',
+        'is_approved'=> 'boolean',
     ];
 
       public function event() {

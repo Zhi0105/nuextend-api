@@ -29,6 +29,7 @@ return new class extends Migration
             
             $table->boolean('is_revised')->default(false);
             $table->boolean('is_updated')->default(false);
+            $table->boolean('is_approved')->default(false);
             
             $table->foreignId('commex_approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('dean_approved_by')->nullable()->constrained('users')->nullOnDelete();

@@ -28,6 +28,7 @@ class Form12 extends Model
 
         'is_updated',
         'is_revised',
+        'is_approved',
     ];
 
     protected $casts = [
@@ -43,6 +44,7 @@ class Form12 extends Model
 
         'is_updated'=> 'boolean',
         'is_revised'=> 'boolean',
+        'is_approved'=> 'boolean',
     ];
 
     public function attendees()

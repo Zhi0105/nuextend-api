@@ -28,6 +28,7 @@ return new class extends Migration
 
             $table->boolean('is_revised')->default(false);
             $table->boolean('is_updated')->default(false);
+            $table->boolean('is_approved')->default(false);
             
              // Idiomatic FK columns
             $table->foreignId('commex_approved_by')->nullable()->constrained('users')->nullOnDelete();

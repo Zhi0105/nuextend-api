@@ -21,6 +21,7 @@ class Form5 extends Model
         'commex_approve_date', 'dean_approve_date', 'asd_approve_date', 'ad_approve_date',
         'is_updated',
         'is_revised',
+        'is_approved',
     ];
 
     protected $casts = [
@@ -51,10 +52,11 @@ class Form5 extends Model
 
         'is_updated'=> 'boolean',
         'is_revised'=> 'boolean',
+        'is_approved'=> 'boolean',
     ];
 
     // Relationships (assuming you have a User model)
-     public function event() {
+    public function event() {
         return $this->belongsTo(Event::class, 'event_id');
     }
     
