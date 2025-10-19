@@ -2,15 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\EventCreatedMail;
 use App\Models\Activity;
 use App\Models\Event;
 use App\Models\EventMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class EventController extends Controller
 {
+
+    private function notifyApprovers($emails, $event) {
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new EventCreatedMail($event));
+        }
+    }
+
     public function index() {
         try {
             $events = Event::with('skills')->with([
@@ -208,6 +217,14 @@ class EventController extends Controller
 
             $event->skills()->sync($request->skills);
             $event->unsdgs()->sync($request->unsdgs);
+
+            // $emails = [
+            //     'jepoy.f@yahoo.com', 
+            //     'jepoyfabian15@gmail.com', 
+            //     'jepoyfabian16@gmail.com',
+            //     'jepoyfabian20@gmail.com'
+            // ];
+            // $this->notifyApprovers($emails, $event);
 
             return response()->json([
                 'status' => 201,
@@ -715,13 +732,13 @@ class EventController extends Controller
         }
     }
     // public function getForms($id) {
-    //     try {
+    //     try {   
     //         $event = Event::findOrFail($id);
     //         $forms = $event->forms; // Collection of Form models
 
     //         return response()->json([
     //             'status' => 200,
-    //             'data' => $forms
+    //             'data' => $forms naka set na email? oo
     //         ], 200);
 
     //     } catch (\Exception $e) {
