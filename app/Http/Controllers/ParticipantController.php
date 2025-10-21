@@ -6,6 +6,8 @@ use App\Models\Attendance;
 use App\Models\Participant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ParticipantController extends Controller
 {
@@ -174,62 +176,78 @@ class ParticipantController extends Controller
     //     }
     // }
 
-    public function attendance(Request $request) {
-        $request->validate([
-            "participant_id" => 'required',
+   public function attendance(Request $request)
+{
+    $validated = $request->validate([
+        'participant_id' => 'required|integer|exists:participants,id',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        $participantId = $validated['participant_id'];
+        $today = now()->toDateString();
+
+        // Check if there's an attendance record for today
+        $attendance = Attendance::where('participant_id', $participantId)
+            ->whereDate('created_at', $today)
+            ->first();
+
+        if (!$attendance) {
+            // Create a new attendance record (time-in)
+            $attendance = Attendance::create([
+                'participant_id' => $participantId,
+                'time_in' => now(),
+                'time_out' => null,
+                'is_attended' => false,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 201,
+                'message' => 'Time in recorded successfully.',
+                'data' => $attendance,
+            ], 201);
+        }
+
+        if (is_null($attendance->time_out)) {
+            // Update existing record with time-out
+            $attendance->update([
+                'time_out' => now(),
+                'is_attended' => true,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Time out recorded successfully.',
+                'data' => $attendance,
+            ], 200);
+        }
+
+        // If both time_in and time_out already exist
+        DB::rollBack();
+        return response()->json([
+            'status' => 400,
+            'message' => 'Attendance already completed for today.',
+        ], 400);
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+
+        Log::error('Attendance error: '.$e->getMessage(), [
+            'participant_id' => $request->participant_id,
+            'trace' => $e->getTraceAsString(),
         ]);
 
-        try {
-            // Get today's date for filtering
-            $today = now()->format('Y-m-d');
-            
-            // Check if participant has any attendance record for today
-            $existingAttendance = Attendance::where('participant_id', $request->participant_id)
-                ->whereDate('created_at', $today)
-                ->first();
-
-            if (!$existingAttendance) {
-                // If no attendance record for today, create time_in
-                $attendanceLog = Attendance::create([
-                    'participant_id' => $request->participant_id,
-                    'time_in' => now()->addDay(),
-                    'time_out' => null 
-                ]);
-
-                return response()->json([
-                    'status' => 201,
-                    'message' => 'Time in recorded successfully',
-                    'data' => $attendanceLog
-                ], 201);
-            }
-
-            // If attendance record exists but has no time_out, update time_out
-            if ($existingAttendance && is_null($existingAttendance->time_out)) {
-                $existingAttendance->update([
-                    'time_out' => now()->addDay(),
-                    'is_attended' => true
-                ]);
-                
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Time out recorded successfully',
-                    'data' => $existingAttendance
-                ], 200);
-            }
-
-            // If both time_in and time_out already exist for today
-            return response()->json([
-                'status' => 400,
-                'message' => 'Attendance already completed for today'
-            ], 400);
-
-            } catch (\Exception $e) {
-            $status = (int) ($e->getCode() ?: 500);
-
-            return response()->json([
-                'status' => $status,
-                'message' => $e->getMessage(),
-            ], $status);
-        }
+        return response()->json([
+            'status' => 500,
+            'message' => 'Something went wrong while recording attendance.',
+            'error' => config('app.debug') ? $e->getMessage() : null,
+        ], 500);
     }
+}
+
 }

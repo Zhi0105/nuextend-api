@@ -18,6 +18,11 @@ class Attendance extends Model
         'time_out'
     ];
 
+    protected $casts = [
+        'time_in' => 'datetime',
+        'time_out' => 'datetime',
+    ];
+
     public function participant() {
         return $this->belongsTo(Participant::class, 'participant_id');
     }

@@ -62,7 +62,7 @@ class UserController extends Controller{
             ],  $e->getCode());
         }
     }
-    
+
     public function update_user_details(Request $request){
             $validated = $request->validate([
                 'user' => 'required|integer|exists:users,id',
