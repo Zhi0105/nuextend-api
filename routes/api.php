@@ -88,6 +88,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/user-update', [UserController::class, 'update_user_details']);
             Route::post('/assign-officer', [UserController::class, 'assign_officer_role']);
             Route::post('/remove-officer', [UserController::class, 'remove_officer_role']);
+            Route::post('/get-hours', [UserController::class, 'get_user_hours']);
         // FORM UPLOADING START
             Route::get('/form/{id}', [FormController::class, 'index']);
             Route::get('/form/program/{model_id}', [FormController::class, 'getProgramForm']);
