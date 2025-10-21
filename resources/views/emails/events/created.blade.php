@@ -1,9 +1,8 @@
 @component('mail::message')
-# New Event Created 🎉
 
-Hi there!
+# Hello {{ getRoleName($user->role_id) }} {{ ucfirst($user->firstname) }} {{ ucfirst($user->lastname) }},
 
-A new event has just been created.
+A new event has just been created! 🎉
 
 **Event Name:** {{ $event->name }}  
 **Date:** {{ $event->implement_date ?? 'TBA' }}  

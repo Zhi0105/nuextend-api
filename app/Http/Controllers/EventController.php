@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Mail;
 class EventController extends Controller
 {
 
-    private function notifyApprovers($emails, $event) {
-        foreach ($emails as $email) {
-            Mail::to($email)->send(new EventCreatedMail($event));
+    private function notifyApprovers($users, $event) {
+        foreach ($users as $user) {
+            Mail::to($user->email)->send(new EventCreatedMail($event, $user));
         }
     }
 
@@ -150,7 +150,7 @@ class EventController extends Controller
     }
     public function create(Request $request) {
         $request->validate([
-            "user_id" => 'required',
+            "user_id" => 'required', 
             "organization_id" => 'sometimes',
             'model_id' => 'required',
             "event_type_id" => 'required',
@@ -179,9 +179,16 @@ class EventController extends Controller
         ]);
 
         try {
+            $owner = User::findOrFail($request->user_id);
+            $commex = User::where('role_id', 1)->get();
+            $asd = User::where('role_id', 10)->get();
+            $ad = User::where('role_id', 11)->get();
+            $dean = User::where('role_id', 9)
+                ->where('department_id', $owner->department_id)
+                ->get();
 
             $event = Event::create([
-                'user_id' => $request->user_id,
+                'user_id' => $request->user_id, 
                 'organization_id' => $request->organization_id,
                 'model_id' => $request->model_id,
                 'event_type_id' => $request->event_type_id,
@@ -218,13 +225,9 @@ class EventController extends Controller
             $event->skills()->sync($request->skills);
             $event->unsdgs()->sync($request->unsdgs);
 
-            // $emails = [
-            //     'jepoy.f@yahoo.com', 
-            //     'jepoyfabian15@gmail.com', 
-            //     'jepoyfabian16@gmail.com',
-            //     'jepoyfabian20@gmail.com'
-            // ];
-            // $this->notifyApprovers($emails, $event);
+            
+            $users = $commex->merge($asd)->merge($ad)->merge($dean);
+            $this->notifyApprovers($users, $event);
 
             return response()->json([
                 'status' => 201,

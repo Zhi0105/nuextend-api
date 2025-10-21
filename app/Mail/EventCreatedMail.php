@@ -12,13 +12,15 @@ class EventCreatedMail extends Mailable
     use Queueable, SerializesModels;
 
     public $event;
+    public $user;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Event $event)
+    public function __construct($event, $user)
     {
         $this->event = $event;
+        $this->user = $user;
     }
 
     /**
@@ -26,7 +28,11 @@ class EventCreatedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject("New Event Created: {$this->event->name}")
-                    ->markdown('emails.events.created');
+         return $this->subject('New Event Created')
+                ->markdown('emails.events.created')
+                ->with([
+                    'event' => $this->event,
+                    'user' => $this->user,
+                ]);
     }
 }
