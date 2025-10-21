@@ -28,7 +28,7 @@ class EventCreatedMail extends Mailable
      */
     public function build()
     {
-         return $this->subject('New Event Created')
+        return $this->subject('New Event Created')
                 ->markdown('emails.events.created')
                 ->with([
                     'event' => $this->event,

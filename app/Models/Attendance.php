@@ -13,7 +13,9 @@ class Attendance extends Model
     protected $fillable = [
         'participant_id',
         'attendance_date',
-        'is_attended'
+        'is_attended',
+        'time_in',
+        'time_out'
     ];
 
     public function participant() {
