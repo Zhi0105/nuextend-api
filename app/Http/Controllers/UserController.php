@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Program;
 use App\Models\User;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 
 class UserController extends Controller{
@@ -149,6 +150,63 @@ class UserController extends Controller{
             return response()->json([
                 'status' => 500,
                 'message' => 'An error occurred while removing officer role.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function get_user_hours(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+        ]);
+
+        try {
+            $user = User::findOrFail($validated['user_id']);
+
+            // Get attendance records for this user through participants using the Attendance model
+            $attendanceRecords = Attendance::with(['participant'])
+                ->whereHas('participant', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->where('is_attended', true)
+                ->get();
+
+            // Calculate total hours
+            $totalMinutes = 0;
+            $attendanceDetails = [];
+
+            foreach ($attendanceRecords as $record) {
+                if ($record->time_in && $record->time_out) {
+                    $minutes = $record->time_in->diffInMinutes($record->time_out);
+                    $totalMinutes += $minutes;
+                    
+                    $attendanceDetails[] = [
+                        'attendance_date' => $record->attendance_date,
+                        'time_in' => $record->time_in,
+                        'time_out' => $record->time_out,
+                        'hours_attended' => round($minutes / 60, 2)
+                    ];
+                }
+            }
+
+            $totalHours = round($totalMinutes / 60, 2);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'User hours calculated successfully.',
+                'data' => [
+                    'user_id' => $user->id,
+                    'user_name' => $user->name, // Assuming you have name field
+                    'total_hours' => $totalHours,
+                    'attendance_count' => $attendanceRecords->count(),
+                    'attendance_details' => $attendanceDetails
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'An error occurred while calculating user hours.',
                 'error' => $e->getMessage()
             ], 500);
         }
