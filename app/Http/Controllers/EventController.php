@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\Event;
 use App\Models\EventMember;
 use App\Models\User;
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -148,99 +149,120 @@ class EventController extends Controller
             ],  $e->getCode());
         }
     }
-    public function create(Request $request) {
-        $request->validate([
-            "user_id" => 'required', 
-            "organization_id" => 'sometimes',
-            'model_id' => 'required',
-            "event_type_id" => 'required',
-            "event_status_id" => 'sometimes',
-            "name" => 'sometimes',
-            "description" => 'sometimes',
-            "location" => 'sometimes',
-            "target_group" => 'sometimes',
-            "term" => "required|string",
-            "implement_date" => "sometimes|date",  //eto yung date haha
-            "budget_proposal" => "sometimes",
-            'skills' => 'array',
-            'skills.*' => 'integer|exists:skills,id',
-            'unsdgs' => 'array',
-            'unsdgs.*' => 'integer|exists:unsdgs,id',
-            'activities' => 'array',
-            'activities.*.name' => 'required|string',
-            'activities.*.description' => 'required|string',
-            'activities.*.address' => 'required|string',
-            'activities.*.start_date' => 'required|string',
-            'activities.*.end_date' => 'required|string',
-            'members' => 'array',
-            'members.*.user_id' => 'required',
-            'members.*.role' => 'required|string',
+public function create(Request $request) {
+    $request->validate([
+        "user_id" => 'required', 
+        "organization_id" => 'sometimes',
+        'model_id' => 'required',
+        "event_type_id" => 'required',
+        "event_status_id" => 'sometimes',
+        "name" => 'sometimes',
+        "description" => 'sometimes',
+        "location" => 'sometimes',
+        "target_group" => 'sometimes',
+        "term" => "required|string",
+        "implement_date" => "sometimes|date",
+        "budget_proposal" => "sometimes",
+        'skills' => 'array',
+        'skills.*' => 'integer|exists:skills,id',
+        'unsdgs' => 'array',
+        'unsdgs.*' => 'integer|exists:unsdgs,id',
+        'activities' => 'array',
+        'activities.*.name' => 'required|string',
+        'activities.*.description' => 'required|string',
+        'activities.*.address' => 'required|string',
+        'activities.*.start_date' => 'required|string',
+        'activities.*.end_date' => 'required|string',
+        'members' => 'array',
+        'members.*.user_id' => 'required',
+        'members.*.role' => 'required|string',
+    ]);
 
+    try {
+        $owner = User::findOrFail($request->user_id);
+        $commex = User::where('role_id', 1)->get();
+        $asd = User::where('role_id', 10)->get();
+        $ad = User::where('role_id', 11)->get();
+        $dean = User::where('role_id', 9)
+            ->where('department_id', $owner->department_id)
+            ->get();
+
+        $event = Event::create([
+            'user_id' => $request->user_id, 
+            'organization_id' => $request->organization_id,
+            'model_id' => $request->model_id,
+            'event_type_id' => $request->event_type_id,
+            'event_status_id' => $request->model_id == 4 ? 10 : 1,
+            'name' => $request->name,
+            'location' => $request->location,
+            'description' => $request->description,
+            'target_group' => $request->target_group,
+            'term' => $request->term,
+            'implement_date' => $request->implement_date,
+            'budget_proposal' => $request->budget_proposal,
+            'is_posted' => $request->model_id == 4 ? 1 : 0
         ]);
 
-        try {
-            $owner = User::findOrFail($request->user_id);
-            $commex = User::where('role_id', 1)->get();
-            $asd = User::where('role_id', 10)->get();
-            $ad = User::where('role_id', 11)->get();
-            $dean = User::where('role_id', 9)
-                ->where('department_id', $owner->department_id)
-                ->get();
-
-            $event = Event::create([
-                'user_id' => $request->user_id, 
-                'organization_id' => $request->organization_id,
-                'model_id' => $request->model_id,
-                'event_type_id' => $request->event_type_id,
-                'event_status_id' => $request->model_id == 4 ? 10 : 1,
-                'name' => $request->name,
-                'location' => $request->location,
-                'description' => $request->description,
-                'target_group' => $request->target_group,
-                'term' => $request->term,
-                'implement_date' => $request->implement_date, //eto din haha
-                'budget_proposal' => $request->budget_proposal,
-                'is_posted' => $request->model_id == 4 ? 1 : 0
+        foreach ($request->activities as $activity) {
+            Activity::create([
+                'event_id' => $event->id,
+                'name' => $activity['name'],
+                'address' => $activity['address'],
+                'start_date' => $activity['start_date'],
+                'end_date' => $activity['end_date'],
+                'description' => $activity['description'],
             ]);
-
-            foreach ($request->activities as $activity) {
-                Activity::create([
-                    'event_id' => $event->id,
-                    'name' => $activity['name'],
-                    'address' => $activity['address'],
-                    'start_date' => $activity['start_date'],
-                    'end_date' => $activity['end_date'],
-                    'description' => $activity['description'],
-                ]);
-            }
-
-            foreach ($request->members as $member) {
-                EventMember::create([
-                    'event_id' => $event->id,
-                    'user_id' => $member['user_id'],
-                    'role' => $member['role']
-                ]);
-            }
-
-            $event->skills()->sync($request->skills);
-            $event->unsdgs()->sync($request->unsdgs);
-
-            
-            $users = $commex->merge($asd)->merge($ad)->merge($dean);
-            $this->notifyApprovers($users, $event);
-
-            return response()->json([
-                'status' => 201,
-                'data' => $event
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => $e->getMessage(),
-            ],  500);
         }
 
+        $eventMembers = [];
+        foreach ($request->members as $member) {
+            $eventMember = EventMember::create([
+                'event_id' => $event->id,
+                'user_id' => $member['user_id'],
+                'role' => $member['role']
+            ]);
+            $eventMembers[] = $eventMember;
+        }
+
+        $event->skills()->sync($request->skills);
+        $event->unsdgs()->sync($request->unsdgs);
+
+        // Add participants: event owner and all event members
+        $participantUserIds = [];
+        
+        // Add event owner as participant
+        $participantUserIds[] = $request->user_id;
+        
+        // Add all event members as participants
+        foreach ($eventMembers as $eventMember) {
+            $participantUserIds[] = $eventMember->user_id;
+        }
+        
+        // Remove duplicates in case owner is also in members
+        $participantUserIds = array_unique($participantUserIds);
+        
+        // Create participants using the Participant model
+        foreach ($participantUserIds as $userId) {
+            Participant::create([
+                'event_id' => $event->id,
+                'user_id' => $userId
+            ]);
+        }
+
+        $users = $commex->merge($asd)->merge($ad)->merge($dean);
+        $this->notifyApprovers($users, $event);
+
+        return response()->json([
+            'status' => 201,
+            'data' => $event
+        ], 201);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 500,
+            'message' => $e->getMessage(),
+        ],  500);
     }
+}
     public function update(Request $request) {
         $validated = $request->validate([
             "id" => "required|integer|exists:events,id",

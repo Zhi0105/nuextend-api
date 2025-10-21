@@ -147,30 +147,87 @@ class ParticipantController extends Controller
             ], $e->getCode() ?: 500);
         }
     }
-    public function attendance(Request $request) {
+    // public function attendance(Request $request) {
 
-        $request->validate([
-            "participant_id" => 'required',
-        ]);
+    //     $request->validate([
+    //         "participant_id" => 'required',
+    //     ]);
 
-        try {
-            $attendanceLog = Attendance::updateOrCreate([
+    //     try {
+    //         $attendanceLog = Attendance::updateOrCreate([
+    //             'participant_id' => $request->participant_id,
+    //             'attendance_date' => now()->addDay(), // add 1 day
+    //         ], [
+    //             'is_attended' => true
+    //         ]);
+
+    //         return response()->json([
+    //             'status' => 201,
+    //             'data' => $attendanceLog
+    //         ], 201);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => $e->getCode() ?: 500,
+    //             'message' => $e->getMessage(),
+    //         ], $e->getCode() ?: 500);
+    //     }
+    // }
+
+public function attendance(Request $request) {
+    $request->validate([
+        "participant_id" => 'required',
+    ]);
+
+    try {
+        // Get today's date for filtering
+        $today = now()->format('Y-m-d');
+        
+        // Check if participant has any attendance record for today
+        $existingAttendance = Attendance::where('participant_id', $request->participant_id)
+            ->whereDate('created_at', $today)
+            ->first();
+
+        if (!$existingAttendance) {
+            // If no attendance record for today, create time_in
+            $attendanceLog = Attendance::create([
                 'participant_id' => $request->participant_id,
-                'attendance_date' => now()->addDay(), // add 1 day
-            ], [
-                'is_attended' => true
+                'time_in' => now()->addDay(),
+                'time_out' => null 
             ]);
 
             return response()->json([
                 'status' => 201,
+                'message' => 'Time in recorded successfully',
                 'data' => $attendanceLog
             ], 201);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => $e->getCode() ?: 500,
-                'message' => $e->getMessage(),
-            ], $e->getCode() ?: 500);
         }
+
+        // If attendance record exists but has no time_out, update time_out
+        if ($existingAttendance && is_null($existingAttendance->time_out)) {
+            $existingAttendance->update([
+                'time_out' => now()->addDay(),
+                'is_attended' => true
+            ]);
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Time out recorded successfully',
+                'data' => $existingAttendance
+            ], 200);
+        }
+
+        // If both time_in and time_out already exist for today
+        return response()->json([
+            'status' => 400,
+            'message' => 'Attendance already completed for today'
+        ], 400);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => $e->getCode() ?: 500,
+            'message' => $e->getMessage(),
+        ], $e->getCode() ?: 500);
     }
+}
 }

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('participant_id');
             $table->date('attendance_date');
             $table->boolean('is_attended')->default(false);
+            $table->datetime('time_in');
+            $table->datetime('time_out');
+
 
 
             // Constraints
